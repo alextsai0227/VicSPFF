@@ -48,7 +48,7 @@ export default function ViewFormDetail(props) {
     function handleDelete() {
         axios({
             method: 'delete',
-            url: `http://localhost:8000/api/supplier/application/${application_id}`
+            url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application_id}`
           }).then(res => {
               const data = props.location.state
               let applications = props.location.state.applications

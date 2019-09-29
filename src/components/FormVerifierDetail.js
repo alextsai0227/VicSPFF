@@ -31,7 +31,7 @@ export default function FormVerifierDetail(props) {
     if (window.localStorage.token) {
       axios({
         method: 'get',
-        url: `http://localhost:8000/api/verifier/current`,
+        url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/current`,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${window.localStorage.token}`
@@ -67,7 +67,7 @@ export default function FormVerifierDetail(props) {
       };
       axios({
         method: 'put',
-        url: `http://localhost:8000/api/verifier/user/${window.localStorage.u_id}`,
+        url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/user/${window.localStorage.u_id}`,
         data: { data: data },
         headers: {
           'Content-Type': 'application/json',

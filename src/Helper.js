@@ -28,7 +28,7 @@ export const setVerifierData = (data) => {
 export const getApplications = (props) => {
     axios({
         method: 'get',
-        url: `http://localhost:8000/api/supplier/applications/${window.localStorage.u_id}`
+        url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/applications/${window.localStorage.u_id}`
       }).then(res => {
           const data = props.location.state
           data.applications = res.data.applications

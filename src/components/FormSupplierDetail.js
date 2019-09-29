@@ -51,7 +51,7 @@ export default function FormSupplierDetail(props) {
     if (window.localStorage.token) {
       axios({
         method: 'get',
-        url: `http://localhost:8000/api/supplier/current`,
+        url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/current`,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${window.localStorage.token}`
@@ -103,7 +103,7 @@ export default function FormSupplierDetail(props) {
       };
       axios({
         method: 'put',
-        url: `http://localhost:8000/api/supplier/user/${window.localStorage.u_id}`,
+        url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/user/${window.localStorage.u_id}`,
         data: { data: data },
         headers: {
           'Content-Type': 'application/json',

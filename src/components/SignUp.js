@@ -39,7 +39,7 @@ export default function SignUp(props) {
             email: email,
             password: password
         };
-        axios.post(`http://localhost:8000/api/supplier`, { user }).then(res => {
+        axios.post(`https://shielded-fjord-25564.herokuapp.com/api/supplier`, { user }).then(res => {
             saveToken(res['data']['user'])
             const { user } = res['data'];
             const data = user;

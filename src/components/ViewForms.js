@@ -37,7 +37,7 @@ export default function ViewForms(props) {
     function showApplicationDetail(evt) {
         axios({
             method: 'get',
-            url: `http://localhost:8000/api/supplier/application/${evt.target.parentNode.getAttribute('value')}`
+            url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${evt.target.parentNode.getAttribute('value')}`
           }).then(res => {
               console.log(res.data.application)
               const data = props.location.state

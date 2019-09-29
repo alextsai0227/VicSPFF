@@ -10,7 +10,7 @@ export class Home extends Component {
         if (window.localStorage.token){
             axios({
                 method: 'get',
-                url: `http://localhost:8000/api/supplier/current`,
+                url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/current`,
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Token ${window.localStorage.token}`

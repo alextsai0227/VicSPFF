@@ -39,7 +39,7 @@ function AppBarVerifier(props) {
   function handleViewForm(evt){
     axios({
       method: 'get',
-      url: `http://localhost:8000/api/verifier/applications`
+      url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`
     }).then(res => {
         console.log(res)
         const data = {}

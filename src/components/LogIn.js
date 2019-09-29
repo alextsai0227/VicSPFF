@@ -41,7 +41,7 @@ export default function LogIn(props) {
 
         if (role === 'supplier') {
             // login supplier
-            axios.post(`http://localhost:8000/api/supplier/login`, { user }).then(res => {
+            axios.post(`https://shielded-fjord-25564.herokuapp.com/api/supplier/login`, { user }).then(res => {
                 saveToken(res['data']['user'])
                 const { user } = res['data']
                 const data = user
@@ -56,7 +56,7 @@ export default function LogIn(props) {
             })
         } else {
             // login verifier
-            axios.post(`http://localhost:8000/api/verifier/login`, { user }).then(res => {
+            axios.post(`https://shielded-fjord-25564.herokuapp.com/api/verifier/login`, { user }).then(res => {
                 saveToken(res['data']['user'])
                 const { user } = res['data']
                 const data = user;

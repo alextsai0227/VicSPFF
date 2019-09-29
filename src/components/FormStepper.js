@@ -80,7 +80,7 @@ export default function FormStepper(props) {
       window.VIC.socialBenefit = []
       axios({
         method: 'post',
-        url: `http://localhost:8000/api/supplier/application/${window.localStorage.u_id}`,
+        url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${window.localStorage.u_id}`,
         data: { data: data },
         headers: {
           'Content-Type': 'application/json',
