@@ -169,7 +169,7 @@ export default function ViewFormDetail(props) {
                                 <TableRow >
                                     <TableCell >{row.company_name}</TableCell>
                                     <TableCell align="center" >{row.service_name}</TableCell>
-                                    <TableCell align="right" >{row.value}</TableCell>
+                                    <TableCell align="right" >{row.value.$numberDecimal}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
