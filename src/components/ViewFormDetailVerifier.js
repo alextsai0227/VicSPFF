@@ -195,7 +195,7 @@ export default function ViewFormDetailVerifier(props) {
                                 <TableRow >
                                     <TableCell >{row.company_name}</TableCell>
                                     <TableCell align="center" >{row.service_name}</TableCell>
-                                    <TableCell align="center" >{row.value}</TableCell>
+                                    <TableCell align="center" >{row.value.$numberDecimal}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
