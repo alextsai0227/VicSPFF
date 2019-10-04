@@ -64,6 +64,7 @@ export default function ViewFormsVerifier(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Application ID</TableCell>
+                                <TableCell align="right">Company Name</TableCell>
                                 <TableCell align="right">Created Date</TableCell>
                                 <TableCell align="right">Status</TableCell>
                             </TableRow>
@@ -72,6 +73,7 @@ export default function ViewFormsVerifier(props) {
                             {applications.map((row, index) => (
                                 <TableRow value={row._id} hover={true} >
                                     <TableCell >{(index + 1).toString().padStart(3,'0')}</TableCell>
+                                    <TableCell align="right" >PUT COMPANY NAME HERE</TableCell>
                                     <TableCell align="right" >{row.created_date.slice(0,10)}</TableCell>
                                     <TableCell align="right" >{row.status}</TableCell>
                                 </TableRow>

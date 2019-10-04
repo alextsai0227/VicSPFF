@@ -25,7 +25,7 @@ function AppBarVerifier(props) {
 
   function handleViewProfile() {
     const path = {
-      pathname: '/ver-profile',    
+      pathname: '/ver-profile',
       state: props.location.state,
     }
     props.history.push(path)
@@ -36,25 +36,22 @@ function AppBarVerifier(props) {
     props.history.push('/login')
   }
 
-  function handleViewForm(evt){
+  function handleViewForm(evt) {
     axios({
       method: 'get',
       url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`
     }).then(res => {
-        console.log(res)
-        const data = {}
-        data.applications = res.data.applications
-        const path = {
-          pathname: '/viewformsverifier',
-          state: data,
-        }
-        props.history.push(path)
+      console.log(res)
+      const data = {}
+      data.applications = res.data.applications
+      const path = {
+        pathname: '/viewformsverifier',
+        state: data,
+      }
+      props.history.push(path)
     }).catch(err => {
-        console.log(err)
+      console.log(err)
     });
-    
-
-
   }
 
   return (

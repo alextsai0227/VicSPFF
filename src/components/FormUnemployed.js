@@ -5,30 +5,21 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 
 // React related package
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        // width: '90%',
-        // margin: 'auto'
-    },
-}));
-
-export default function FormSocialBenefit(props) {
-    const classes = useStyles();
-    const [state, setState] = React.useState({
+export default function FormUnemployed(props) {
+    const [state, setState] = useState({
         columns: [
-            { title: 'Social Enterprise ', field: 'company_name' },
-            { title: 'Services They Will Provide', field: 'service_name' },
-            { title: 'Potential Value', field: 'value', type: 'numeric' }
+            { title: 'Current Recruitment (Number Of)', field: 'curr_emp', type: 'numeric' },
+            { title: 'Proposed Future Recruitment (Number Of)', field: 'future_emp', type: 'numeric' }
         ],
-        data: window.VIC.socialBenefit,
+        data: window.VIC.unemployed,
     });
 
     useEffect(() => {
         //componentDidMount 及 componentDidUpdate
         const data = state.data
-        window.VIC.socialBenefit = data
+        window.VIC.unemployed = data
         console.log(`更新後的 State ${JSON.stringify(data)}`)
         //componentDidUpdate 及 componentWillUnmount
         return (() => {
@@ -36,13 +27,13 @@ export default function FormSocialBenefit(props) {
         })
 
     })
+
     return (
-        <div className={classes.root}>
-            <h1>Verified Social Benefits</h1>
+        <div>
+            <h1>Cohorts Employment</h1>
             <Container component="main" maxWidth="lg">
-                <Paper className={classes.root}>
+                <Paper>
                     <MaterialTable
-                        className={classes.table}
                         columns={state.columns}
                         data={state.data}
                         editable={{
@@ -80,4 +71,3 @@ export default function FormSocialBenefit(props) {
         </div>
     );
 }
-

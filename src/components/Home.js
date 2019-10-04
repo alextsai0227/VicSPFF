@@ -19,6 +19,7 @@ export class Home extends Component {
                 const data = {
                     "company_name": res.data.user.company_name,
                     "abn": res.data.user.abn,
+                    'numEmp': res.data.user.numEmp,
                     "email": res.data.user.email,
                     "phone": res.data.user.phone,
                     "street": res.data.user.street,

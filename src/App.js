@@ -8,8 +8,8 @@ import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import FormStepper from './components/FormStepper';
 import './App.css';
-import FormSupplierDetail from './components/FormSupplierDetail';
-import FormVerifierDetail from './components/FormVerifierDetail';
+import SupplierProfile from './components/SupplierProfile';
+import VerifierProfile from './components/VerifierProfile';
 import Home from './components/Home';
 
 function App() {
@@ -25,8 +25,8 @@ function App() {
           <Route exact path='/signup' component={withRouter(SignUp)} />
           <Route exact path='/login' component={withRouter(LogIn)} />
           <Route exact path='/form' component={withRouter(FormStepper)} />
-          <Route exact path='/sup-profile' component={withRouter(FormSupplierDetail)} />
-          <Route exact path='/ver-profile' component={withRouter(FormVerifierDetail)} />
+          <Route exact path='/sup-profile' component={withRouter(SupplierProfile)} />
+          <Route exact path='/ver-profile' component={withRouter(VerifierProfile)} />
         </Switch>
       </BrowserRouter>
     </div>

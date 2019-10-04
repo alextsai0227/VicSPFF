@@ -11,7 +11,7 @@ import { useInputState, useToggle } from './Hooks';
 import { supProfileStyles } from './Style'
 import axios from 'axios';
 
-export default function FormVerifierDetail(props) {
+export default function VerifierProfile(props) {
   let r_companyName = ''
   let r_abn = ''
   let r_actType = ''

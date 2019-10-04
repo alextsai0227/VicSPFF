@@ -12,11 +12,11 @@ export const setSupplierData = (data) => {
     window.VIC.suburb = data.suburb
     window.VIC.state = data.state
     window.VIC.abn = data.abn
+    window.VIC.numEmp = data.numEmp
     window.localStorage.u_id = data._id
 };
 
-export const setVerifierData = (data) => {
-    
+export const setVerifierData = (data) => {  
     data = data
     window.VIC.data = data
     window.VIC.company_name = data.company_name
