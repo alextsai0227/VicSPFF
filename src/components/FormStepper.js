@@ -7,54 +7,23 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 // React related package
-import FormAboEmp from './FormAboEmp';
+import FormAboriginal from './FormAboriginal';
 import FormUnemployed from './FormUnemployed';
 import FormDisability from './FormDisability';
 import FormRefugee from './FormRefugee';
 import FormPreview from './FormPreview';
 import FormComplete from './FormComplete';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import React from 'react';
 import axios from 'axios';
 import { getApplications } from '../Helper';
-
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    margin: 'auto'
-  },
-  backButton: {
-    marginRight: theme.spacing(1)
-  },
-  buttons: {
-    width: '100%',
-    position: 'fixed',
-    bottom: '10px',
-    textAlign: 'center',
-    // zIndex: '100000000,'
-  },
-  backButton: {
-    backgroundColor: 'white',
-    marginLeft: '25px',
-    marginRight: '25px',
-  },
-  nextButton: {
-    marginLeft: '25px',
-    marginRight: '25px',
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  },
-}));
+import { useFormStepperStyles } from './Style'
 
 export default function FormStepper(props) {
-  const classes = useStyles();
+  const classes = useFormStepperStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
 
-  console.log("FormStepper")
   // init global variable for submit new form
   window.VIC.abo = window.VIC.abo || []
   window.VIC.disability = window.VIC.disability || []
@@ -74,8 +43,7 @@ export default function FormStepper(props) {
         'company_name': window.localStorage.company_name
       };
       // submited, so reset variable
-      window.VIC.aboEmp = []
-      window.VIC.aboCur = []
+      window.VIC.aboriginal = []
       window.VIC.disability = []
       window.VIC.refugee = []
       window.VIC.unemployed = []
@@ -107,7 +75,7 @@ export default function FormStepper(props) {
   function getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <FormAboEmp props={props} />;
+        return <FormAboriginal props={props} />;
       case 1:
         return <FormDisability props={props} />;
       case 2:

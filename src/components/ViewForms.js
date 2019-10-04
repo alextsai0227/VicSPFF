@@ -10,28 +10,13 @@ import Container from '@material-ui/core/Container';
 
 // React related package
 import React from 'react';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import axios from 'axios';
+import { useViewFormsStyles } from './Style'
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-}));
-
-const rows = [
-    { realId: "a094rgj9", showId: "0001", date: "2019/09/20", status: "Unverified" },
-    { realId: "b09erwj9", showId: "0002", date: "2019/09/01", status: "Verifying" },
-    { realId: "cwre4rj9", showId: "0003", date: "2019/08/11", status: "Completed" },
-]
 
 export default function ViewForms(props) {
-    const classes = useStyles();
+    const classes = useViewFormsStyles();
     // conditions if (props.applications) use props.applications, if not use state
     const applications = props.location.state.applications
     function showApplicationDetail(evt) {

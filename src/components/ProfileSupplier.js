@@ -9,15 +9,14 @@ import Select from '@material-ui/core/Select';
 
 // React related package
 import React, { useEffect } from 'react';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import { useInputState, useToggle } from './Hooks';
 import { supProfileStyles } from './Style'
 import axios from 'axios';
 
-export default function SupplierProfile(props) {
+export default function ProfileSupplier(props) {
   let r_companyName = ''
   let r_abn = ''
-  let r_numEmp = ''
   let r_email = ''
   let r_phone = ''
   let r_street = ''
@@ -35,9 +34,6 @@ export default function SupplierProfile(props) {
     }
     if (data.abn) {
       r_abn = data.abn
-    }
-    if (data.numEmp) {
-      r_numEmp = data.numEmp
     }
     if (data.email) {
       r_email = data.email
@@ -63,7 +59,6 @@ export default function SupplierProfile(props) {
       }).then(res => {
         r_companyName = res.data.user.company_name
         r_abn = res.data.user.abn
-        r_numEmp = res.data.user.numEmp
         r_email = res.data.user.email
         r_phone = res.data.user.phone
         r_street = res.data.user.street
@@ -72,7 +67,6 @@ export default function SupplierProfile(props) {
         updateCompanyName(r_companyName)
         updateEmail(r_email)
         updateAbn(r_abn)
-        updateNumEmp(r_numEmp)
         updatePhone(r_phone)
         updateStreet(r_street)
         updateSuburb(r_suburb)
@@ -90,7 +84,6 @@ export default function SupplierProfile(props) {
   const [readOnly, toggle] = useToggle(true);
   const [companyName, updateCompanyName] = useInputState(r_companyName);
   const [abn, updateAbn] = useInputState(r_abn);
-  const [numEmp, updateNumEmp] = useInputState(r_numEmp);
   const [email, updateEmail] = useInputState(r_email);
   const [phone, updatePhone] = useInputState(r_phone);
   const [street, updateStreet] = useInputState(r_street);
@@ -106,7 +99,6 @@ export default function SupplierProfile(props) {
         'suburb': suburb,
         'state': state,
         'abn': abn,
-        'numEmp': numEmp,
         'company_name': companyName
       };
       axios({
@@ -176,19 +168,6 @@ export default function SupplierProfile(props) {
                   readOnly={readOnly}
                   value={abn}
                   onChange={e => updateAbn(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Total Number of Employee"
-                  floatingLabelText="Employee Number*"
-                  type="number"
-                  id="numEmp"
-                  readOnly={readOnly}
-                  value={numEmp}
-                  onChange={e => updateNumEmp(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>

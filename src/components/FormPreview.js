@@ -17,19 +17,20 @@ export default function FormPreview(props) {
   const disability_data = window.VIC.disability
   const refugee = window.VIC.refugee
 
-  return (
-    <div>
-      <h1>Preview</h1>
-      <Container component="main" maxWidth="lg">
+
+    return (
+        <div>
+            <h1>Preview</h1>
+            <Container component="main" maxWidth="lg">
                 <br />
                 <Typography component="h2" variant="h5" align="left">
                     Aboriginal People
                 </Typography>
                 <Paper>
-                    <Table >
+                    <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
                                 <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
@@ -43,6 +44,7 @@ export default function FormPreview(props) {
                         </TableBody>
                     </Table>
                 </Paper>
+
                 <br /><br /><br />
                 <Typography component="h2" variant="h5" align="left">
                     People With Disability
@@ -51,7 +53,7 @@ export default function FormPreview(props) {
                     <Table >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
                                 <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
@@ -111,8 +113,8 @@ export default function FormPreview(props) {
                 </Paper>
                 <br /><br />
             </Container>
-    </div>
-  );
+        </div>
+    );
 }
 
 

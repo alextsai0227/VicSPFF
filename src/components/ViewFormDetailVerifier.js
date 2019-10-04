@@ -17,24 +17,15 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import React, { useEffect } from 'react';
 import { useToggle, useInputState } from './Hooks';
 import NaviBar from './AppBarVerifier';
+import { useViewFormDetailStyles } from './Style'
 import axios from 'axios';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-    button: {
-        marginLeft: '50px',
-    },
-}));
+
 
 export default function ViewFormDetailVerifier(props) {
-    const classes = useStyles();
+
+    const classes = useViewFormDetailStyles();
+
     const [abo_existing_data_button, toggleAboExisting] = useToggle(false);
     const [abo_future_data_button, toggleAboFuture] = useToggle(false);
     const [cohorts_data_button, toggleCohorts] = useToggle(false);
@@ -47,14 +38,11 @@ export default function ViewFormDetailVerifier(props) {
     const [social_benefit_data_status, setSocialBenefit] = useInputState('');
     const [job_readiness_data_status, setJobReadiness] = useInputState('');
 
-
     const application = props.location.state.application
-    const abo_existing_data = application.emp_curr_abo
-    const abo_future_data = application.emp_recruit_abo
+    const aboriginal_data = application.aboriginal
     const unemployed_data = application.unemployed
     const disability_data = application.disability
     const refugee_data = application.refugee
-
 
 
     function handleBack() {
@@ -65,6 +53,7 @@ export default function ViewFormDetailVerifier(props) {
         props.history.push(path)
     }
     function handleSave() {
+
         console.log(application._id)
         let data = new Object(); 
         if (abo_existing_data_status !== ''){
@@ -135,7 +124,7 @@ export default function ViewFormDetailVerifier(props) {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Typography component="h2" variant="h5" align="left">
-                            Aboriginal Existing Employment
+                            Aboriginal People
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
@@ -164,49 +153,15 @@ export default function ViewFormDetailVerifier(props) {
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Existing Aboriginal Employee Roles</TableCell>
-                                <TableCell align="center">Years Recruited</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {abo_existing_data.map(row => (
+                            {aboriginal_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.emp_role}</TableCell>
-                                    <TableCell align="center" >{row.emp_year}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-
-                <br /><br /><br />
-
-                <Grid container spacing={3}>
-                    <Grid item xs={8}>
-                        <Typography component="h2" variant="h5" align="left">
-                            Aboriginal Future Employment
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <ButtonGroup color="primary" aria-label="outlined primary button group">
-                            <Button>Refute</Button>
-                            <Button>Confirm</Button>
-                        </ButtonGroup>
-                    </Grid>
-                </Grid>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Aboriginal Roles To Be Recruited </TableCell>
-                                <TableCell align="center">Proposed Recruitment Year</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {abo_future_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.recruit_role}</TableCell>
-                                    <TableCell align="center" >{row.recruit_year}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="center" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

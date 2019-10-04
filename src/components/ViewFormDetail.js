@@ -17,25 +17,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 // React related package
 import React from 'react';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import axios from 'axios';
+import { useViewFormDetailStyles } from './Style'
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-    button: {
-        marginLeft: '50px',
-    },
-}));
 
 export default function ViewFormDetail(props) {
-    const classes = useStyles();
+    const classes = useViewFormDetailStyles();
     const [open, setOpen] = React.useState(false);
     const application = props.location.state.application
     const application_id = application._id
@@ -48,18 +36,18 @@ export default function ViewFormDetail(props) {
         axios({
             method: 'delete',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application_id}`
-          }).then(res => {
-              const data = props.location.state
-              let applications = props.location.state.applications
-              data.applications = applications.filter(application => application_id !== application._id)
-              const path = {
+        }).then(res => {
+            const data = props.location.state
+            let applications = props.location.state.applications
+            data.applications = applications.filter(application => application_id !== application._id)
+            const path = {
                 pathname: '/viewforms',
                 state: data,
-              }
-              props.history.push(path)
-          }).catch(err => {
-              console.log(err)
-          });
+            }
+            props.history.push(path)
+        }).catch(err => {
+            console.log(err)
+        });
     }
 
     function handleBack() {
@@ -90,7 +78,7 @@ export default function ViewFormDetail(props) {
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
                                 <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
