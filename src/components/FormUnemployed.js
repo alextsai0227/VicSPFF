@@ -30,7 +30,7 @@ export default function FormUnemployed(props) {
 
     return (
         <div>
-            <h1>Cohorts Employment</h1>
+            <h1>Long-term Unemployed People</h1>
             <Container component="main" maxWidth="lg">
                 <Paper>
                     <MaterialTable

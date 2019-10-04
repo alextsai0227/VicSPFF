@@ -12,8 +12,8 @@ export const setSupplierData = (data) => {
     window.VIC.suburb = data.suburb
     window.VIC.state = data.state
     window.VIC.abn = data.abn
-    window.VIC.numEmp = data.numEmp
     window.localStorage.u_id = data._id
+    window.localStorage.company_name = data.company_name
 };
 
 export const setVerifierData = (data) => {  
@@ -40,4 +40,21 @@ export const getApplications = (props) => {
       }).catch(err => {
           console.log(err)
       });
+}
+
+export const getResult = (props) => {
+    // axios({
+    //     method: 'get',
+    //     url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/applications/${window.localStorage.u_id}`
+    //   }).then(res => {
+    //       const data = props.location.state
+    //       data.applications = res.data.applications
+    //       const path = {
+    //         pathname: '/viewforms',
+    //         state: data,
+    //       }
+    //       props.history.push(path)
+    //   }).catch(err => {
+    //       console.log(err)
+    //   });
 }

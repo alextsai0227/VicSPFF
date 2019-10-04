@@ -6,19 +6,19 @@ import Container from '@material-ui/core/Container';
 // React related package
 import React, { useEffect } from 'react';
 
-export default function FormDisability(props) {
+export default function FormAboriginal(props) {
     const [state, setState] = React.useState({
         columns: [
-            { title: 'Current Recruitment (Number Of)', field: 'curr_emp', type: 'numeric'},
-            { title: 'Proposed Future Recruitment (Number Of)', field: 'future_emp', type: 'numeric'},
+            { title: 'Current Recruitment (Number Of)', field: 'curr_emp', type: 'numeric' },
+            { title: 'Proposed Future Recruitment (Number Of)', field: 'future_emp', type: 'numeric' },
         ],
-        data: window.VIC.disability,
+        data: window.VIC.aboriginal,
     });
 
     useEffect(() => {
         //componentDidMount 及 componentDidUpdate
         const data = state.data
-        window.VIC.disability = data
+        window.VIC.aboriginal = data
         console.log(`更新後的 State ${JSON.stringify(data)}`)
         //componentDidUpdate 及 componentWillUnmount
         return (() => {
@@ -28,7 +28,7 @@ export default function FormDisability(props) {
     
     return (
         <div>
-            <h1>People With Disability</h1>
+            <h1>Aboriginal People</h1>
             <Container component="main" maxWidth="lg">
                 <Paper>
                     <MaterialTable
