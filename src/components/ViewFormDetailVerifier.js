@@ -82,7 +82,7 @@ export default function ViewFormDetailVerifier(props) {
         }
         axios({
             method: 'put',
-            url: `http://localhost:8001/api/supplier/application/${application._id}`,
+            url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application._id}`,
             data: { data: data },
             headers: {
                 'Content-Type': 'application/json',
