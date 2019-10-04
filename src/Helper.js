@@ -23,6 +23,7 @@ export const setVerifierData = (data) => {
     window.VIC.activity_type = data.activity_type
     window.VIC.abn = data.abn
     window.localStorage.u_id = data._id
+    window.localStorage.role = data.role
 };
 
 export const getApplications = (props) => {

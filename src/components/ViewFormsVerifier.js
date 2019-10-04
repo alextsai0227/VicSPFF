@@ -25,7 +25,7 @@ export default function ViewFormsVerifier(props) {
             method: 'get',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${evt.target.parentNode.getAttribute('value')}`
           }).then(res => {
-              const data = {}
+              const data = props.location.state
               data.application = res.data.application
               data.applications = applications
               const path = {
@@ -58,7 +58,7 @@ export default function ViewFormsVerifier(props) {
                             {applications.map((row, index) => (
                                 <TableRow value={row._id} hover={true} >
                                     <TableCell >{(index + 1).toString().padStart(3,'0')}</TableCell>
-                                    <TableCell align="right" >PUT COMPANY NAME HERE</TableCell>
+                                    <TableCell align="right" >{row.company_name}</TableCell>
                                     <TableCell align="right" >{row.created_date.slice(0,10)}</TableCell>
                                     <TableCell align="right" >{row.status}</TableCell>
                                 </TableRow>
