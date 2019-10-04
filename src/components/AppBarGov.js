@@ -1,3 +1,4 @@
+
 // Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,47 +7,24 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import FindInPageOutlinedIcon from '@material-ui/icons/FindInPageOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 
 // React related package
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { getApplications, getResult } from '../Helper'
 import { useAppBarStyles } from './Style'
-import axios from 'axios'
 
-function AppBarVerifier(props) {
+function AppBarGov(props) {
   const classes = useAppBarStyles();
-
-  function handleViewProfile() {
-    const path = {
-      pathname: '/ver-profile',
-      state: props.location.state,
-    }
-    props.history.push(path)
-  }
 
   function handleLogout(evt) {
     localStorage.removeItem('token');
     props.history.push('/login')
   }
 
-  function handleViewForm(evt) {
-    axios({
-      method: 'get',
-      url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`
-    }).then(res => {
-      console.log(res)
-      const data = {}
-      data.applications = res.data.applications
-      const path = {
-        pathname: '/viewformsverifier',
-        state: data,
-      }
-      props.history.push(path)
-    }).catch(err => {
-      console.log(err)
-    });
+  function handleViewResult(evt){
+    getResult(props)
   }
 
   return (
@@ -57,17 +35,10 @@ function AppBarVerifier(props) {
           <Typography className={classes.title} variant="h6" noWrap>VicSPF</Typography>
           <div className={classes.grow} />
 
-          {/* view all applications to be verified */}
-          <Tooltip title="Verify Forms">
-            <IconButton color="inherit" onClick={handleViewForm}>
+          {/* view results button */}
+          <Tooltip title="View Results">
+            <IconButton color="inherit" onClick={handleViewResult}>
               <FindInPageOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-
-          {/* profile button */}
-          <Tooltip title="My Profile">
-            <IconButton color="inherit" onClick={handleViewProfile}>
-              <AccountCircleIcon />
             </IconButton>
           </Tooltip>
 
@@ -85,4 +56,4 @@ function AppBarVerifier(props) {
 }
 
 
-export default withRouter(AppBarVerifier);
+export default withRouter(AppBarGov);

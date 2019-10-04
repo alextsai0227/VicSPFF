@@ -15,15 +15,10 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { getApplications } from '../Helper'
+import { useAppBarStyles } from './Style'
 
-const useStyles = makeStyles(theme => ({
-  grow: {
-    flexGrow: 1,
-  },
-}));
-
-function PrimarySearchAppBar(props) {
-  const classes = useStyles();
+function AppBarSupplier(props) {
+  const classes = useAppBarStyles();
 
   function handleAddForm() {
     const path = {
@@ -93,4 +88,4 @@ function PrimarySearchAppBar(props) {
 }
 
 
-export default withRouter(PrimarySearchAppBar);
+export default withRouter(AppBarSupplier);

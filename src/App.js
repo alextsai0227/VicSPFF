@@ -7,10 +7,11 @@ import ViewFormDetailVerifier from './components/ViewFormDetailVerifier';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import FormStepper from './components/FormStepper';
-import './App.css';
-import SupplierProfile from './components/SupplierProfile';
-import VerifierProfile from './components/VerifierProfile';
+import ProfileSupplier from './components/ProfileSupplier';
+import ProfileVerifier from './components/ProfileVerifier';
+import GovernmentView from './components/GovernmentView';
 import Home from './components/Home';
+import './App.css';
 
 function App() {
   return (
@@ -25,8 +26,9 @@ function App() {
           <Route exact path='/signup' component={withRouter(SignUp)} />
           <Route exact path='/login' component={withRouter(LogIn)} />
           <Route exact path='/form' component={withRouter(FormStepper)} />
-          <Route exact path='/sup-profile' component={withRouter(SupplierProfile)} />
-          <Route exact path='/ver-profile' component={withRouter(VerifierProfile)} />
+          <Route exact path='/sup-profile' component={withRouter(ProfileSupplier)} />
+          <Route exact path='/ver-profile' component={withRouter(ProfileVerifier)} />
+          <Route exact path='/gov' component={withRouter(GovernmentView)} />
         </Switch>
       </BrowserRouter>
     </div>

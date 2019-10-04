@@ -17,50 +17,37 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 // React related package
 import React from 'react';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import axios from 'axios';
+import { useViewFormDetailStyles } from './Style'
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        marginTop: theme.spacing(3),
-        overflowX: 'auto',
-    },
-    table: {
-        minWidth: 650,
-    },
-    button: {
-        marginLeft: '50px',
-    },
-}));
 
 export default function ViewFormDetail(props) {
-    const classes = useStyles();
+    const classes = useViewFormDetailStyles();
     const [open, setOpen] = React.useState(false);
     const application = props.location.state.application
     const application_id = application._id
-    const abo_existing_data = application.emp_curr_abo
-    const abo_future_data = application.emp_recruit_abo
+    const aboriginal_data = application.aboriginal
     const unemployed_data = application.emp_cohorts
     const disability_data = application.social_benefit
     const refugee = application.readiness_act
-    
+
     function handleDelete() {
         axios({
             method: 'delete',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application_id}`
-          }).then(res => {
-              const data = props.location.state
-              let applications = props.location.state.applications
-              data.applications = applications.filter(application => application_id !== application._id)
-              const path = {
+        }).then(res => {
+            const data = props.location.state
+            let applications = props.location.state.applications
+            data.applications = applications.filter(application => application_id !== application._id)
+            const path = {
                 pathname: '/viewforms',
                 state: data,
-              }
-              props.history.push(path)
-          }).catch(err => {
-              console.log(err)
-          });
+            }
+            props.history.push(path)
+        }).catch(err => {
+            console.log(err)
+        });
     }
 
     function handleBack() {
@@ -85,43 +72,21 @@ export default function ViewFormDetail(props) {
                 <h1> Application Details</h1>
                 <br />
                 <Typography component="h2" variant="h5" align="left">
-                    Aboriginal Existing Employment
+                    Aboriginal People
                 </Typography>
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Existing Aboriginal Employee Roles</TableCell>
-                                <TableCell align="right">Years Recruited</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {abo_existing_data.map(row => (
+                            {aboriginal_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.emp_role}</TableCell>
-                                    <TableCell align="right" >{row.emp_year}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <br /><br /><br />
-                <Typography component="h2" variant="h5" align="left">
-                    Aboriginal Future Employment
-                </Typography>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Aboriginal Roles To Be Recruited </TableCell>
-                                <TableCell align="right">Proposed Recruitment Year</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {abo_future_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.recruit_role}</TableCell>
-                                    <TableCell align="right" >{row.recruit_year}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="center" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

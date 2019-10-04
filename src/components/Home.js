@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NaviBar from './PrimarySearchAppBar';
+import NaviBar from './AppBarSupplier';
 import axios from 'axios';
 
 export class Home extends Component {
@@ -19,7 +19,6 @@ export class Home extends Component {
                 const data = {
                     "company_name": res.data.user.company_name,
                     "abn": res.data.user.abn,
-                    'numEmp': res.data.user.numEmp,
                     "email": res.data.user.email,
                     "phone": res.data.user.phone,
                     "street": res.data.user.street,
