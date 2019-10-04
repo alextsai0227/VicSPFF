@@ -71,93 +71,112 @@ export default function ViewFormDetail(props) {
                 <br />
                 <h1> Application Details</h1>
                 <br />
-                <Typography component="h2" variant="h5" align="left">
-                    Aboriginal People
-                </Typography>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
-                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {abo_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.curr_emp}</TableCell>
-                                    <TableCell align="right" >{row.future_emp}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <br /><br /><br />
-                <Typography component="h2" variant="h5" align="left">
-                    People With Disability
-                </Typography>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Current Recruitment (Number Of)</TableCell>
-                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {disability_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.curr_emp}</TableCell>
-                                    <TableCell align="right" >{row.future_emp}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <br /><br /><br />
-                <Typography component="h2" variant="h5" align="left">
-                    Refugee
-                </Typography>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
-                                <TableCell align="right"> Proposed Future Recruitment&nbsp;(Number Of)</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {refugee.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.curr_emp}</TableCell>
-                                    <TableCell align="right" >{row.future_emp}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <br /><br /><br />
-                <Typography component="h2" variant="h5" align="left">
-                    Long-term Unemployed People
-                </Typography>
-                <Paper className={classes.root}>
-                    <Table className={classes.table} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Current Recruitment (Number Of)</TableCell>
-                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {unemployed_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.curr_emp}</TableCell>
-                                    <TableCell align="right" >{row.future_emp}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
+                {(abo_data.length > 0) && 
+                    <div>
+                        <Typography component="h2" variant="h5" align="left">
+                            Aboriginal People
+                        </Typography>
+                        <Paper className={classes.root}>
+                            <Table className={classes.table} >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                        <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody >
+                                    {abo_data.map(row => (
+                                        <TableRow >
+                                            <TableCell >{row.curr_emp}</TableCell>
+                                            <TableCell align="right" >{row.future_emp}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    </div>
+                }
+                
+                {(disability_data.length > 0) && 
+                    <div>
+                    <br /><br />
+                        <Typography component="h2" variant="h5" align="left">
+                            People With Disability
+                        </Typography>
+                        <Paper className={classes.root}>
+                            <Table className={classes.table} >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Current Recruitment (Number Of)</TableCell>
+                                        <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody >
+                                    {disability_data.map(row => (
+                                        <TableRow >
+                                            <TableCell >{row.curr_emp}</TableCell>
+                                            <TableCell align="right" >{row.future_emp}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    </div>
+                }
+                
+                {(refugee.length > 0) && 
+                    <div>
+                    <br /><br />
+                        <Typography component="h2" variant="h5" align="left">
+                            Refugee
+                        </Typography>
+                        <Paper className={classes.root}>
+                            <Table className={classes.table} >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                        <TableCell align="right"> Proposed Future Recruitment&nbsp;(Number Of)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody >
+                                    {refugee.map(row => (
+                                        <TableRow >
+                                            <TableCell >{row.curr_emp}</TableCell>
+                                            <TableCell align="right" >{row.future_emp}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    </div>
+                }
+
+                {(unemployed_data.length > 0) && 
+                    <div>
+                    <br /><br />
+                        <Typography component="h2" variant="h5" align="left">
+                            Long-term Unemployed People
+                        </Typography>
+                        <Paper className={classes.root}>
+                            <Table className={classes.table} >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Current Recruitment (Number Of)</TableCell>
+                                        <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody >
+                                    {unemployed_data.map(row => (
+                                        <TableRow >
+                                            <TableCell >{row.curr_emp}</TableCell>
+                                            <TableCell align="right" >{row.future_emp}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    </div>
+                }                
                 <br /><br />
                 <div>
                     <Button onClick={handleBack} className={classes.button} >Back</Button>
