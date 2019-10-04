@@ -8,9 +8,9 @@ import Typography from '@material-ui/core/Typography';
 
 // React related package
 import FormAboEmp from './FormAboEmp';
-import FormCohortsEmp from './FormCohortsEmp';
-import FormSocialBenefit from './FormSocialBenefit';
-import FormJobReadiness from './FormJobReadiness';
+import FormUnemployed from './FormUnemployed';
+import FormDisability from './FormDisability';
+import FormRefugee from './FormRefugee';
 import FormPreview from './FormPreview';
 import FormComplete from './FormComplete';
 import NaviBar from './PrimarySearchAppBar';
@@ -53,13 +53,15 @@ export default function FormStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
+
   console.log("FormStepper")
   // init global variable for submit new form
   window.VIC.aboEmp = window.VIC.aboEmp || []
   window.VIC.aboCur = window.VIC.aboCur || []
-  window.VIC.cohortEmp = window.VIC.cohortEmp || []
-  window.VIC.jobReadiness = window.VIC.jobReadiness || []
-  window.VIC.socialBenefit = window.VIC.socialBenefit || []
+  window.VIC.disability = window.VIC.disability || []
+  window.VIC.refugee = window.VIC.refugee || []
+  window.VIC.unemployed = window.VIC.unemployed || []
+
   function handleNext() {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
 
@@ -68,16 +70,17 @@ export default function FormStepper(props) {
         'supplier_id': window.localStorage.u_id,
         'aboEmp': window.VIC.aboEmp,
         'aboCur': window.VIC.aboCur,
-        'cohortEmp': window.VIC.cohortEmp,
-        'jobReadiness': window.VIC.jobReadiness,
-        'socialBenefit': window.VIC.socialBenefit
+        'disability': window.VIC.disability,
+        'refugee': window.VIC.refugee,
+        'unemployed': window.VIC.unemployed
       };
       // submited, so reset variable
       window.VIC.aboEmp = []
       window.VIC.aboCur = []
-      window.VIC.cohortEmp = []
-      window.VIC.jobReadiness = []
-      window.VIC.socialBenefit = []
+      window.VIC.disability = []
+      window.VIC.refugee = []
+      window.VIC.unemployed = []
+      
       axios({
         method: 'post',
         url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${window.localStorage.u_id}`,
@@ -107,11 +110,11 @@ export default function FormStepper(props) {
       case 0:
         return <FormAboEmp props={props} />;
       case 1:
-        return <FormCohortsEmp props={props} />;
+        return <FormDisability props={props} />;
       case 2:
-        return <FormSocialBenefit props={props} />;
+        return <FormRefugee props={props} />;
       case 3:
-        return <FormJobReadiness props={props} />;
+        return <FormUnemployed props={props} />;
       case 4:
         return <FormPreview props={props} />;
       case 5:
@@ -120,8 +123,8 @@ export default function FormStepper(props) {
   }
 
   function getSteps() {
-    return ['Aboriginal Employment', 'Cohorts Employment',
-      'Verified Social Benefits', 'Job Readiness Activities', 'Preview', 'Complete'];
+    return ['Aboriginal People', 'People With Disability',
+      'Refugee', 'Long-term Unemployed People', 'Preview', 'Complete'];
   }
   function sitchButton() {
     if (activeStep === steps.length - 1) {

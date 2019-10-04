@@ -11,15 +11,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 // React related package
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useToggle, useInputState } from './Hooks';
 import NaviBar from './AppBarVerifier';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -37,12 +35,27 @@ const useStyles = makeStyles(theme => ({
 
 export default function ViewFormDetailVerifier(props) {
     const classes = useStyles();
+    const [abo_existing_data_button, toggleAboExisting] = useToggle(false);
+    const [abo_future_data_button, toggleAboFuture] = useToggle(false);
+    const [cohorts_data_button, toggleCohorts] = useToggle(false);
+    const [social_benefit_data_button, toggleSocialBenefit] = useToggle(false);
+    const [job_readiness_data_button, toggleJobReadiness] = useToggle(false);
+
+    const [abo_existing_data_status, setAboExisting] = useInputState('');
+    const [abo_future_data_status, setAboFuture] = useInputState('');
+    const [cohorts_data_status, setCohorts] = useInputState('');
+    const [social_benefit_data_status, setSocialBenefit] = useInputState('');
+    const [job_readiness_data_status, setJobReadiness] = useInputState('');
+
+
     const application = props.location.state.application
     const abo_existing_data = application.emp_curr_abo
     const abo_future_data = application.emp_recruit_abo
-    const cohorts_data = application.emp_cohorts
-    const social_benefit_data = application.social_benefit
-    const job_readiness_data = application.readiness_act
+    const unemployed_data = application.unemployed
+    const disability_data = application.disability
+    const refugee_data = application.refugee
+
+
 
     function handleBack() {
         const path = {
@@ -52,8 +65,65 @@ export default function ViewFormDetailVerifier(props) {
         props.history.push(path)
     }
     function handleSave() {
+        console.log(application._id)
+        let data = new Object(); 
+        if (abo_existing_data_status !== ''){
+            data.abo_existing_data = abo_existing_data_status
+        }
+        axios({
+            method: 'put',
+            url: `http://localhost:8001/api/supplier/application/${application._id}`,
+            data: { data: data },
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(res => {
 
+            const path = {
+            pathname: '/viewformsverifier',
+            state: props.location.state,
+            }
+            props.history.push(path)
+        }).catch(err => {
+            console.log(err)
+        });
     }
+
+    function handleStatus(e){
+        const str = e.target.getAttribute('value') ? e.target.getAttribute('value'):e.target.parentNode.getAttribute('value') 
+        const button =  e.target.getAttribute('value') ? e.target:e.target.parentNode
+        console.log(str)
+        switch (str) {
+            case 'abo_existing_data_confirm':
+              toggleAboExisting()
+              setAboExisting('confirm')
+              document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
+              break;
+            case 'abo_existing_data_refute':
+              toggleAboExisting()
+              setAboExisting('refute')
+              document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
+              break;
+            default:
+              console.log('Sorry, no string match');
+        }
+    }
+
+    useEffect(() => {
+        console.log(`更新後的 State`)
+        if (application.abo_existing_data_status !== ''){
+            if(application.abo_existing_data_status === 'confirm'){
+                document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
+            }else{
+    
+            }
+        }
+        //componentDidUpdate 及 componentWillUnmount
+        return (() => {
+          console.log(`更新前的 State`)
+        })
+    
+      })
 
     return (
         <>
@@ -69,10 +139,24 @@ export default function ViewFormDetailVerifier(props) {
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
-                        <ButtonGroup color="primary" aria-label="outlined primary button group">
-                            <Button>Refute</Button>
-                            <Button>Confirm</Button>
-                        </ButtonGroup>
+                            <Button 
+                                onClick={handleStatus} 
+                                id='abo_existing_data_refute' 
+                                value='abo_existing_data_refute' 
+                                disabled={abo_existing_data_button} 
+                                color='primary' 
+                                variant='outlined'>
+                                    Refute
+                            </Button>
+                            <Button 
+                                onClick={handleStatus} 
+                                id='abo_existing_data_confirm' 
+                                value='abo_existing_data_confirm' 
+                                disabled={abo_existing_data_button} 
+                                color='primary' 
+                                variant='outlined'>
+                                    Confirm
+                            </Button>
                     </Grid>
                 </Grid>
 
@@ -134,7 +218,7 @@ export default function ViewFormDetailVerifier(props) {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Typography component="h2" variant="h5" align="left">
-                            Cohorts Employment
+                            People With Disability
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
@@ -144,21 +228,18 @@ export default function ViewFormDetailVerifier(props) {
                         </ButtonGroup>
                     </Grid>
                 </Grid>
-
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Group</TableCell>
-                                <TableCell align="center">Current Number Employed</TableCell>
-                                <TableCell align="center">Proposed Future Recruitment&nbsp;(Number of)</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {cohorts_data.map(row => (
+                            {disability_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.group_name}</TableCell>
-                                    <TableCell align="center" >{row.curr_emp}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
                                     <TableCell align="center" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
@@ -171,7 +252,7 @@ export default function ViewFormDetailVerifier(props) {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Typography component="h2" variant="h5" align="left">
-                            Verified Social Benefits
+                            Refugee
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
@@ -185,17 +266,15 @@ export default function ViewFormDetailVerifier(props) {
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Social Enterprise</TableCell>
-                                <TableCell align="center">Services They Will Provide</TableCell>
-                                <TableCell align="center">Potential Value</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {social_benefit_data.map(row => (
+                            {refugee_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.company_name}</TableCell>
-                                    <TableCell align="center" >{row.service_name}</TableCell>
-                                    <TableCell align="center" >{row.value.$numberDecimal}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -207,7 +286,7 @@ export default function ViewFormDetailVerifier(props) {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Typography component="h2" variant="h5" align="left">
-                            Job Readiness Activities
+                            Long-term Unemployed People
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
@@ -217,26 +296,26 @@ export default function ViewFormDetailVerifier(props) {
                         </ButtonGroup>
                     </Grid>
                 </Grid>
+
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Group</TableCell>
-                                <TableCell align="center">Number of People</TableCell>
-                                <TableCell align="center">Number of Hours</TableCell>
+                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {job_readiness_data.map(row => (
+                            {unemployed_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.group_name}</TableCell>
-                                    <TableCell align="center" >{row.num_people}</TableCell>
-                                    <TableCell align="center" >{row.num_hour}</TableCell>
+                                    <TableCell>{row.curr_emp}</TableCell>
+                                    <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </Paper>
+
                 <br /><br />
                 <div>
                     <Button onClick={handleBack} variant="contained" className={classes.button} >Back</Button>

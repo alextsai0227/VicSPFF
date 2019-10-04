@@ -1,5 +1,4 @@
 // Material UI
-import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
@@ -7,18 +6,7 @@ import Container from '@material-ui/core/Container';
 // React related package
 import React, { useEffect } from 'react';
 
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        // width: '90%',
-        // margin: 'auto',
-        // marginTop: theme.spacing(3),
-        // overflowX: 'auto',
-    },
-}));
-
 export default function FormAboEmp(props) {
-    const classes = useStyles();
     const tableOneColumns = [
         { title: 'Existing Aboriginal Employee Roles ', field: 'emp_role'},
         { title: 'Years Recruited', field: 'emp_year', type: 'numeric' }
@@ -51,14 +39,13 @@ export default function FormAboEmp(props) {
 
     })
     return (
-        <div className={classes.root}>
-            <h1>Aboriginal Employment</h1>
+        <div>
+            <h1>Aboriginal People</h1>
             <Container component="main" maxWidth="lg">
-                <Paper className={classes.root}>
+                <Paper>
                     {/* existing employment table */}
                     <MaterialTable
                         title="Existing Employment"
-                        className={classes.table}
                         columns={tableOneColumns}
                         data={oneData.data}
                         editable={{
@@ -93,10 +80,9 @@ export default function FormAboEmp(props) {
                     /></Paper>
                 {/* future employment table */}
                 <br /><br />
-                <Paper className={classes.root}>
+                <Paper>
                     <MaterialTable
                         title="Future Employment"
-                        className={classes.table}
                         columns={tableTwoColumns}
                         data={twoData.data}
                         editable={{
