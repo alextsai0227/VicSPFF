@@ -41,9 +41,9 @@ export default function ViewFormDetail(props) {
     const application_id = application._id
     const abo_existing_data = application.emp_curr_abo
     const abo_future_data = application.emp_recruit_abo
-    const cohorts_data = application.emp_cohorts
-    const social_benefit_data = application.social_benefit
-    const job_readiness_data = application.readiness_act
+    const unemployed_data = application.emp_cohorts
+    const disability_data = application.social_benefit
+    const refugee = application.readiness_act
     
     function handleDelete() {
         axios({
@@ -129,22 +129,20 @@ export default function ViewFormDetail(props) {
                 </Paper>
                 <br /><br /><br />
                 <Typography component="h2" variant="h5" align="left">
-                    Cohorts Employment
+                    People With Disability
                 </Typography>
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Group</TableCell>
-                                <TableCell align="center">Current Number Employed</TableCell>
-                                <TableCell align="right">Proposed Future Recruitment&nbsp;(Number of)</TableCell>
+                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {cohorts_data.map(row => (
+                            {disability_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.group_name}</TableCell>
-                                    <TableCell align="center" >{row.curr_emp}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
                                     <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
@@ -153,23 +151,21 @@ export default function ViewFormDetail(props) {
                 </Paper>
                 <br /><br /><br />
                 <Typography component="h2" variant="h5" align="left">
-                    Verified Social Benefits
+                    Refugee
                 </Typography>
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Social Enterprise</TableCell>
-                                <TableCell align="center">Services They Will Provide</TableCell>
-                                <TableCell align="right">Potential Value</TableCell>
+                                <TableCell>Current Recruitment&nbsp;(Number Of)</TableCell>
+                                <TableCell align="right"> Proposed Future Recruitment&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {social_benefit_data.map(row => (
+                            {refugee.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.company_name}</TableCell>
-                                    <TableCell align="center" >{row.service_name}</TableCell>
-                                    <TableCell align="right" >{row.value.$numberDecimal}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -177,23 +173,21 @@ export default function ViewFormDetail(props) {
                 </Paper>
                 <br /><br /><br />
                 <Typography component="h2" variant="h5" align="left">
-                    Job Readiness Activities
+                    Long-term Unemployed People
                 </Typography>
                 <Paper className={classes.root}>
                     <Table className={classes.table} >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Group</TableCell>
-                                <TableCell align="center">Number of People</TableCell>
-                                <TableCell align="right">Number of Hours</TableCell>
+                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {job_readiness_data.map(row => (
+                            {unemployed_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.group_name}</TableCell>
-                                    <TableCell align="center" >{row.num_people}</TableCell>
-                                    <TableCell align="right" >{row.num_hour}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
