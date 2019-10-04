@@ -18,14 +18,44 @@ import { useViewFormsStyles } from './Style'
 export default function ViewFormsVerifier(props) {
     const classes = useViewFormsStyles();
     // conditions if (props.applications) use props.applications, if not use state
-    console.log(props.location.state)
     const applications = props.location.state.applications
+    const role = props.location.state.role
+    const filter_application = applications.filter(application => {
+        switch (role) {
+            case 'aboriginal':
+                if(application.emp_abo.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            case 'disability':
+                if(application.emp_disability.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            case 'refugee':
+                if(application.emp_refugee.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            case 'unemployed':
+                if(application.emp_unemploy.length > 0){
+                    return true
+                }else{
+                    return false
+                }
+            default:
+              console.log('Sorry, no string match');
+        }
+    })
     function showApplicationDetail(evt) {
         axios({
             method: 'get',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${evt.target.parentNode.getAttribute('value')}`
           }).then(res => {
-              const data = {}
+              const data = props.location.state
               data.application = res.data.application
               data.applications = applications
               const path = {
@@ -55,10 +85,10 @@ export default function ViewFormsVerifier(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody onClick={showApplicationDetail}>
-                            {applications.map((row, index) => (
+                            {filter_application.map((row, index) => (
                                 <TableRow value={row._id} hover={true} >
                                     <TableCell >{(index + 1).toString().padStart(3,'0')}</TableCell>
-                                    <TableCell align="right" >PUT COMPANY NAME HERE</TableCell>
+                                    <TableCell align="right" >{row.company_name}</TableCell>
                                     <TableCell align="right" >{row.created_date.slice(0,10)}</TableCell>
                                     <TableCell align="right" >{row.status}</TableCell>
                                 </TableRow>

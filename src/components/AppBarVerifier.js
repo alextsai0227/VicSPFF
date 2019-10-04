@@ -36,8 +36,7 @@ function AppBarVerifier(props) {
       method: 'get',
       url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`
     }).then(res => {
-      console.log(res)
-      const data = {}
+      const data = props.location.state
       data.applications = res.data.applications
       const path = {
         pathname: '/viewformsverifier',
