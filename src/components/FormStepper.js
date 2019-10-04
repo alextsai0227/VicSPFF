@@ -56,8 +56,7 @@ export default function FormStepper(props) {
 
   console.log("FormStepper")
   // init global variable for submit new form
-  window.VIC.aboEmp = window.VIC.aboEmp || []
-  window.VIC.aboCur = window.VIC.aboCur || []
+  window.VIC.abo = window.VIC.abo || []
   window.VIC.disability = window.VIC.disability || []
   window.VIC.refugee = window.VIC.refugee || []
   window.VIC.unemployed = window.VIC.unemployed || []
@@ -68,11 +67,11 @@ export default function FormStepper(props) {
     if (activeStep === 4) {
       const data = {
         'supplier_id': window.localStorage.u_id,
-        'aboEmp': window.VIC.aboEmp,
-        'aboCur': window.VIC.aboCur,
+        'abo': window.VIC.abo,
         'disability': window.VIC.disability,
         'refugee': window.VIC.refugee,
-        'unemployed': window.VIC.unemployed
+        'unemployed': window.VIC.unemployed,
+        'company_name': window.localStorage.company_name
       };
       // submited, so reset variable
       window.VIC.aboEmp = []

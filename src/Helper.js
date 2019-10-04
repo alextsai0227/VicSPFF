@@ -14,6 +14,7 @@ export const setSupplierData = (data) => {
     window.VIC.abn = data.abn
     window.VIC.numEmp = data.numEmp
     window.localStorage.u_id = data._id
+    window.localStorage.company_name = data.company_name
 };
 
 export const setVerifierData = (data) => {  

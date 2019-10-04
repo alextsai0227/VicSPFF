@@ -12,8 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import React from 'react';
 
 export default function FormPreview(props) {
-  const abo_existing_data = window.VIC.aboCur
-  const abo_future_data = window.VIC.aboEmp
+  const abo_data = window.VIC.abo
   const unemployed_data = window.VIC.unemployed
   const disability_data = window.VIC.disability
   const refugee = window.VIC.refugee
@@ -24,43 +23,21 @@ export default function FormPreview(props) {
       <Container component="main" maxWidth="lg">
                 <br />
                 <Typography component="h2" variant="h5" align="left">
-                    Aboriginal Existing Employment
+                    Aboriginal People
                 </Typography>
                 <Paper>
-                    <Table>
+                    <Table >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Existing Aboriginal Employee Roles</TableCell>
-                                <TableCell align="right">Years Recruited</TableCell>
+                                <TableCell>Current Recruitment (Number Of)</TableCell>
+                                <TableCell align="right">Proposed Future Recruitmentt&nbsp;(Number Of)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {abo_existing_data.map(row => (
+                            {abo_data.map(row => (
                                 <TableRow >
-                                    <TableCell >{row.emp_role}</TableCell>
-                                    <TableCell align="right" >{row.emp_year}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <br /><br /><br />
-                <Typography component="h2" variant="h5" align="left">
-                    Aboriginal Future Employment
-                </Typography>
-                <Paper>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Aboriginal Roles To Be Recruited </TableCell>
-                                <TableCell align="right">Proposed Recruitment Year</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {abo_future_data.map(row => (
-                                <TableRow >
-                                    <TableCell >{row.recruit_role}</TableCell>
-                                    <TableCell align="right" >{row.recruit_year}</TableCell>
+                                    <TableCell >{row.curr_emp}</TableCell>
+                                    <TableCell align="right" >{row.future_emp}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
