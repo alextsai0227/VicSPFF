@@ -11,33 +11,28 @@ import Container from '@material-ui/core/Container';
 
 // React related package
 import React, { useEffect, useState } from 'react';
-import NaviBar from './AppBarSupplier';
+import NaviBar from './AppBarGov';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useGovenmentTalbeStyles } from './Style'
 
-
 const headCells = [
-    { id: 'name', numeric: false, label: 'Company Name' },
-    { id: 'aboriginal', numeric: true, label: 'aboriginal' },
-    { id: 'disability', numeric: true, label: 'disability' },
-    { id: 'refugee', numeric: true, label: 'refugee' },
-    { id: 'unemployed', numeric: true,  label: 'unemployed' },
+    { id: 'company_name', numeric: false, label: 'Company Name' },
+    { id: 'aboriginal', numeric: true, label: 'Aboriginal' },
+    { id: 'disability', numeric: true, label: 'Disability' },
+    { id: 'refugee', numeric: true, label: 'Refugee' },
+    { id: 'unemployed', numeric: true,  label: 'Unemployed' },
     { id: 'overall', numeric: true, label: 'overall' },
 ];
 
 function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
-    console.log("abo cur " + aboriginal_cur + "abo fut " + aboriginal_fut);
-    console.log("disa cur " + disability_cur + "dis fut " + disability_fut);
-    console.log("ref cur " + refugee_cur + "ref fut " + refugee_fut);
-    console.log("unem cur " + unemployed_cur + "unem fut " + unemployed_fut);
-
     const abo_score = (aboriginal_cur * 0.3 + aboriginal_fut * 0.7)
     const disa_score = (disability_cur * 0.3 + disability_fut * 0.7)
     const refu_score = (refugee_cur * 0.3 + refugee_fut * 0.7)
     const unemp_score = (unemployed_cur * 0.3 + unemployed_fut * 0.7)
     const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
-    return overall;
+    const rounded_overall = Math.round(overall * 100) / 100
+    return rounded_overall;
 }
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -109,13 +104,26 @@ export default function GovernmentView() {
 
     const [applications, setApplications] = useState([]);
 
+    const a = applications.map(application => {
+        const abo_future = (application.emp_abo.length > 0 && application.emp_abo[0].future_emp != null) ? Number(application.emp_abo[0].future_emp) : 0;
+        const abo_current = (application.emp_abo.length > 0 && application.emp_abo[0].curr_emp != null) ? Number(application.emp_abo[0].curr_emp) : 0;
+        const disa_future = (application.emp_disability.length > 0 && application.emp_disability[0].future_emp != null) ? Number(application.emp_disability[0].future_emp) : 0;
+        const disa_current = (application.emp_disability.length > 0 && application.emp_disability[0].curr_emp != null) ? Number(application.emp_disability[0].curr_emp) : 0;
+        const ref_future = (application.emp_refugee.length > 0 && application.emp_refugee[0].future_emp != null) ? Number(application.emp_refugee[0].future_emp) : 0;
+        const ref_current = (application.emp_refugee.length > 0 && application.emp_refugee[0].curr_emp != null) ? Number(application.emp_refugee[0].curr_emp) : 0;
+        const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
+        const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
+        const overall = getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
+        return {company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall }
+    })
+
+
     useEffect(() => {
         axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`)
             .then((res) => {
                 setApplications(res.data.applications);
             })
     }, applications)
-    console.log("000000000000000");
     console.log(applications);
 
     const classes = useGovenmentTalbeStyles();
@@ -158,32 +166,24 @@ export default function GovernmentView() {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                {stableSort(applications, getSorting(order, orderBy))
+                                {stableSort(a, getSorting(order, orderBy)) 
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((application, index) => {
 
-                                        const abo_future = (application.emp_abo.length > 0) ? application.emp_abo[0].future_emp : 0;
-                                        const abo_current = (application.emp_abo.length > 0) ? application.emp_abo[0].curr_emp : 0;
-                                        const disa_future = (application.emp_disability.length > 0) ? application.emp_disability[0].future_emp : 0;
-                                        const disa_current = (application.emp_disability.length > 0) ? application.emp_disability[0].curr_emp : 0;
-                                        const ref_future = (application.emp_refugee.length > 0) ? application.emp_refugee[0].future_emp : 0;
-                                        const ref_current = (application.emp_refugee.length > 0) ? application.emp_refugee[0].curr_emp : 0;
-                                        const unemp_future = (application.emp_unemploy.length > 0) ? application.emp_unemploy[0].future_emp : 0;
-                                        const unemp_current = (application.emp_unemploy.length > 0) ? application.emp_unemploy[0].curr_emp : 0;
                                         return (
                                             <TableRow
                                                 hover
                                                 tabIndex={-1}
-                                                key={application.company_name}
+                                                key={index}
                                             >
-                                                <TableCell component="th" scope="application" padding="default">
+                                                <TableCell component="th" id={index} scope="application" padding="default">
                                                     {application.company_name}
                                                 </TableCell>
-                                                <TableCell align="center">{abo_future}</TableCell>
-                                                <TableCell align="center">{disa_future}</TableCell>
-                                                <TableCell align="center">{ref_future}</TableCell>
-                                                <TableCell align="center">{unemp_future}</TableCell>
-                                                <TableCell align="center"> {getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)} </TableCell>
+                                                <TableCell align="center">{application.aboriginal}</TableCell> 
+                                                <TableCell align="center">{application.disability}</TableCell>
+                                                <TableCell align="center">{application.refugee}</TableCell>
+                                                <TableCell align="center">{application.unemployed}</TableCell>
+                                                <TableCell align="center">{application.overall} </TableCell>
                                             </TableRow>
                                         );
                                     })}
