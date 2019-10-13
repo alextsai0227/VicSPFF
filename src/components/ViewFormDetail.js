@@ -15,7 +15,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 // React related package
-import React from 'react';
+import React, { useEffect } from 'react';
 import NaviBar from './AppBarSupplier';
 import axios from 'axios';
 import { useViewFormDetailStyles } from './Style'
@@ -30,7 +30,7 @@ export default function ViewFormDetail(props) {
     const unemployed_data = application.emp_unemploy
     const disability_data = application.emp_disability
     const refugee = application.emp_refugee
-    
+
     function handleDelete() {
         axios({
             method: 'delete',
@@ -62,7 +62,18 @@ export default function ViewFormDetail(props) {
     function closeDialog() {
         setOpen(false);
     }
-
+    
+    useEffect(() => {
+        console.log(`更新後的 State`)
+        if (application.status !== 'Unverified'){
+            document.querySelector("#withdraw").setAttribute('hidden', '')
+        }
+        //componentDidUpdate 及 componentWillUnmount
+        return (() => {
+          console.log(`更新前的 State`)
+        })
+    
+      })
     return (
         <>
             <NaviBar />
@@ -179,7 +190,7 @@ export default function ViewFormDetail(props) {
                 <br /><br />
                 <div>
                     <Button onClick={handleBack} className={classes.button} >Back</Button>
-                    <Button variant="contained" color="secondary" onClick={showDialog} className={classes.button}>Withdraw</Button>
+                    <Button variant="contained" color="secondary" onClick={showDialog} className={classes.button} id='withdraw'>Withdraw</Button>
                 </div>
                 <Dialog open={open} onClose={closeDialog}>
                     <DialogTitle id="alert-dialog-title">{"Withdraw application?"}</DialogTitle>
