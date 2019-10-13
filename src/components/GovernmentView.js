@@ -1,5 +1,4 @@
 // Material UI
-import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,37 +6,32 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import Container from '@material-ui/core/Container';
 
 // React related package
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NaviBar from './AppBarSupplier';
 import PropTypes from 'prop-types';
-import { useGovenmentTalbeStyles, useToolbarStyles } from './Style'
+import axios from 'axios';
+import { useGovenmentTalbeStyles } from './Style'
+
 
 const headCells = [
-    { id: 'name', numeric: false, disablePadding: false, label: 'Company Name' },
-    { id: 'aboriginal', numeric: true, disablePadding: false, label: 'aboriginal' },
-    { id: 'disability', numeric: true, disablePadding: false, label: 'disability' },
-    { id: 'refugee', numeric: true, disablePadding: false, label: 'refugee' },
-    { id: 'unemployed', numeric: true, disablePadding: false, label: 'unemployed' },
-    { id: 'overall', numeric: true, disablePadding: false, label: 'overall' },
-];
-
-const rows = [
-    { name: "RA company", aboriginal: 5, disability: 24, refugee: 4, unemployed: 11, overall: 22.5 },
-    { name: "G company", aboriginal: 30, disability: 53, refugee: 5, unemployed: 0, overall: 98.4 },
-    { name: "KF company", aboriginal: 64, disability: 4, refugee: 53, unemployed: 65, overall: 68.4 },
+    { id: 'name', numeric: false, label: 'Company Name' },
+    { id: 'aboriginal', numeric: true, label: 'aboriginal' },
+    { id: 'disability', numeric: true, label: 'disability' },
+    { id: 'refugee', numeric: true, label: 'refugee' },
+    { id: 'unemployed', numeric: true,  label: 'unemployed' },
+    { id: 'overall', numeric: true, label: 'overall' },
 ];
 
 function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
+    console.log("abo cur " + aboriginal_cur + "abo fut " + aboriginal_fut);
+    console.log("disa cur " + disability_cur + "dis fut " + disability_fut);
+    console.log("ref cur " + refugee_cur + "ref fut " + refugee_fut);
+    console.log("unem cur " + unemployed_cur + "unem fut " + unemployed_fut);
+
     const abo_score = (aboriginal_cur * 0.3 + aboriginal_fut * 0.7)
     const disa_score = (disability_cur * 0.3 + disability_fut * 0.7)
     const refu_score = (refugee_cur * 0.3 + refugee_fut * 0.7)
@@ -81,8 +75,8 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
+                        align={headCell.numeric ? 'center' : 'left'}
+                        padding='default'
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <TableSortLabel
@@ -111,34 +105,19 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-
-const EnhancedTableToolbar = props => {
-    const classes = useToolbarStyles();
-    const [showRed, setShowRed] = React.useState(false);
-    const handleChangeRed = event => {
-        setShowRed(event.target.checked);
-    };
-
-    return (
-        <Toolbar>
-            <div className={classes.spacer} />
-            <FormControlLabel
-                control={<Switch checked={showRed} onChange={handleChangeRed} />}
-                label="Show Red"
-            />
-            <div className={classes.actions}>
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            </div>
-        </Toolbar>
-    );
-};
-
-
 export default function GovernmentView() {
+
+    const [applications, setApplications] = useState([]);
+
+    useEffect(() => {
+        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`)
+            .then((res) => {
+                setApplications(res.data.applications);
+            })
+    }, applications)
+    console.log("000000000000000");
+    console.log(applications);
+
     const classes = useGovenmentTalbeStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('overall');
@@ -160,16 +139,13 @@ export default function GovernmentView() {
         setPage(0);
     };
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
     return (
         <>
             <NaviBar />
-            <Container component="main" maxWidth="md">
+            <Container component="main" maxWidth="lg">
                 <br />
                 <h1> Results </h1>
                 <Paper className={classes.root}>
-                    <EnhancedTableToolbar />
                     <div className={classes.tableWrapper}>
                         <Table
                             className={classes.table}
@@ -182,40 +158,43 @@ export default function GovernmentView() {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                {stableSort(rows, getSorting(order, orderBy))
+                                {stableSort(applications, getSorting(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row, index) => {
-                                        const labelId = `enhanced-table-checkbox-${index}`;
+                                    .map((application, index) => {
 
+                                        const abo_future = (application.emp_abo.length > 0) ? application.emp_abo[0].future_emp : 0;
+                                        const abo_current = (application.emp_abo.length > 0) ? application.emp_abo[0].curr_emp : 0;
+                                        const disa_future = (application.emp_disability.length > 0) ? application.emp_disability[0].future_emp : 0;
+                                        const disa_current = (application.emp_disability.length > 0) ? application.emp_disability[0].curr_emp : 0;
+                                        const ref_future = (application.emp_refugee.length > 0) ? application.emp_refugee[0].future_emp : 0;
+                                        const ref_current = (application.emp_refugee.length > 0) ? application.emp_refugee[0].curr_emp : 0;
+                                        const unemp_future = (application.emp_unemploy.length > 0) ? application.emp_unemploy[0].future_emp : 0;
+                                        const unemp_current = (application.emp_unemploy.length > 0) ? application.emp_unemploy[0].curr_emp : 0;
                                         return (
                                             <TableRow
                                                 hover
                                                 tabIndex={-1}
-                                                key={row.name}
+                                                key={application.company_name}
                                             >
-                                                <TableCell component="th" id={labelId} scope="row" padding="default">
-                                                    {row.name}
+                                                <TableCell component="th" scope="application" padding="default">
+                                                    {application.company_name}
                                                 </TableCell>
-                                                <TableCell align="right">{row.aboriginal}</TableCell>
-                                                <TableCell align="right">{row.disability}</TableCell>
-                                                <TableCell align="right">{row.refugee}</TableCell>
-                                                <TableCell align="right">{row.unemployed}</TableCell>
-                                                <TableCell align="right">{row.overall}</TableCell>
+                                                <TableCell align="center">{abo_future}</TableCell>
+                                                <TableCell align="center">{disa_future}</TableCell>
+                                                <TableCell align="center">{ref_future}</TableCell>
+                                                <TableCell align="center">{unemp_future}</TableCell>
+                                                <TableCell align="center"> {getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)} </TableCell>
                                             </TableRow>
                                         );
                                     })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
+
                             </TableBody>
                         </Table>
                     </div>
                     <TablePagination
                         rowsPerPageOptions={[10, 20]}
                         component="div"
-                        count={rows.length}
+                        count={applications.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}

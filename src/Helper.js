@@ -43,19 +43,20 @@ export const getApplications = (props) => {
       });
 }
 
+
 export const getResult = (props) => {
-    // axios({
-    //     method: 'get',
-    //     url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/applications/${window.localStorage.u_id}`
-    //   }).then(res => {
-    //       const data = props.location.state
-    //       data.applications = res.data.applications
-    //       const path = {
-    //         pathname: '/viewforms',
-    //         state: data,
-    //       }
-    //       props.history.push(path)
-    //   }).catch(err => {
-    //       console.log(err)
-    //   });
+    axios({
+        method: 'get',
+        url: `https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`
+      }).then(res => {
+          const data = props.location.state
+          data.applications = res.data.applications
+          const path = {
+            pathname: '/gov',
+            state: data,
+          }
+          props.history.push(path)
+      }).catch(err => {
+          console.log(err)
+      });
 }

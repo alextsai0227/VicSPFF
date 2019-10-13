@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import React from 'react';
 
 export default function FormPreview(props) {
-  const abo_data = window.VIC.abo
+  const abo_data = window.VIC.aboriginal
   const unemployed_data = window.VIC.unemployed
   const disability_data = window.VIC.disability
   const refugee = window.VIC.refugee

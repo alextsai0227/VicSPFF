@@ -85,7 +85,7 @@ export const useGovenmentTalbeStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 750,
+    minWidth: 1050,
   },
   tableWrapper: {
     overflowX: 'auto',

@@ -1,5 +1,4 @@
 // Material UI
-import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -25,7 +24,7 @@ export default function FormStepper(props) {
   const steps = getSteps();
 
   // init global variable for submit new form
-  window.VIC.abo = window.VIC.abo || []
+  window.VIC.aboriginal = window.VIC.aboriginal || []
   window.VIC.disability = window.VIC.disability || []
   window.VIC.refugee = window.VIC.refugee || []
   window.VIC.unemployed = window.VIC.unemployed || []
@@ -36,7 +35,7 @@ export default function FormStepper(props) {
     if (activeStep === 4) {
       const data = {
         'supplier_id': window.localStorage.u_id,
-        'abo': window.VIC.abo,
+        'abo': window.VIC.aboriginal,
         'disability': window.VIC.disability,
         'refugee': window.VIC.refugee,
         'unemployed': window.VIC.unemployed,

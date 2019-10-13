@@ -12,7 +12,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 // React related package
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { getApplications, getResult } from '../Helper'
+import { getResult } from '../Helper'
 import { useAppBarStyles } from './Style'
 
 function AppBarGov(props) {
