@@ -19,28 +19,33 @@ export default function ViewFormsVerifier(props) {
     // conditions if (props.applications) use props.applications, if not use state
     const applications = props.location.state.applications
     const role = props.location.state.role
+    let status = ''
     const filter_application = applications.filter(application => {
         switch (role) {
             case 'aboriginal':
                 if(application.emp_abo.length > 0){
+                    status = 'abo_existing_data_status'
                     return true
                 }else{
                     return false
                 }
             case 'disability':
                 if(application.emp_disability.length > 0){
+                    status = 'disability_data_status'
                     return true
                 }else{
                     return false
                 }
             case 'refugee':
                 if(application.emp_refugee.length > 0){
+                    status = 'refugee_data_status'
                     return true
                 }else{
                     return false
                 }
             case 'unemployed':
                 if(application.emp_unemploy.length > 0){
+                    status = 'unemployed_data_status'
                     return true
                 }else{
                     return false
@@ -89,7 +94,7 @@ export default function ViewFormsVerifier(props) {
                                     <TableCell >{(index + 1).toString().padStart(3,'0')}</TableCell>
                                     <TableCell align="right" >{row.company_name}</TableCell>
                                     <TableCell align="right" >{row.created_date.slice(0,10)}</TableCell>
-                                    <TableCell align="right" >{row.status}</TableCell>
+                                    <TableCell align="right" >{row[status] || row.status}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
