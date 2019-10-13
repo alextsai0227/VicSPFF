@@ -82,21 +82,21 @@ export default function ViewFormDetailVerifier(props) {
             update_data.abo_existing_data_status = abo_existing_data_status
             update_data.status = processing
         }else if(disability_data_status !== ''){
-            update_data.emp_abo[0].disability_data_status = disability_data_status
+            update_data.emp_disability[0].disability_data_status = disability_data_status
             update_data.disability_data_status = disability_data_status
             update_data.status = processing
         }else if(refugee_data_status !== ''){
-            update_data.emp_abo[0].refugee_data_status = refugee_data_status
+            update_data.emp_refugee[0].refugee_data_status = refugee_data_status
             update_data.refugee_data_status = refugee_data_status
             update_data.status = processing
         }else if(unemployed_data_status !== ''){
-            update_data.emp_abo[0].unemployed_data_status = unemployed_data_status
+            update_data.emp_unemploy[0].unemployed_data_status = unemployed_data_status
             update_data.unemployed_data_status = unemployed_data_status
             update_data.status = processing
         }
         axios({
             method: 'put',
-            url: `http://localhost:8001/api/supplier/application/${application._id}`,
+            url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application._id}`,
             data: { data: update_data },
             headers: {
                 'Content-Type': 'application/json',
