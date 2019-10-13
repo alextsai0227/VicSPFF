@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import NaviBar from './AppBarSupplier';
 import axios from 'axios';
 
 export class Home extends Component {

@@ -1,5 +1,4 @@
 // Material UI
-import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';

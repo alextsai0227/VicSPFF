@@ -1,5 +1,4 @@
 // Material UI
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -35,30 +34,22 @@ export default function ViewFormDetailVerifier(props) {
     let refugee_role = false
     let unemployed_role = false
     // check the button
-    let abo_button = false
-    if (application.abo_existing_data_status){
-            abo_button = true
-    }
+    let abo_button = application.abo_existing_data_status ? true : false
+    let disability_button = application.disability_data_status ? true : false
+    let refugee_button = application.refugee_data_status ? true : false
+    let unemployed_button = application.unemployed_data_status ? true : false
 
     const classes = useViewFormDetailStyles();
 
     const [abo_existing_data_button, toggleAboExisting] = useToggle(abo_button);
-    const [abo_future_data_button, toggleAboFuture] = useToggle(false);
-    const [cohorts_data_button, toggleCohorts] = useToggle(false);
-    const [social_benefit_data_button, toggleSocialBenefit] = useToggle(false);
-    const [job_readiness_data_button, toggleJobReadiness] = useToggle(false);
+    const [disability_data_button, toggleDisability] = useToggle(disability_button);
+    const [refugee_data_button, toggleRefugee] = useToggle(refugee_button);
+    const [unemployed_data_button, toggleUnemployed] = useToggle(unemployed_button);
 
     const [abo_existing_data_status, setAboExisting] = useInputState('');
-    const [abo_future_data_status, setAboFuture] = useInputState('');
-    const [cohorts_data_status, setCohorts] = useInputState('');
-    const [social_benefit_data_status, setSocialBenefit] = useInputState('');
-    const [job_readiness_data_status, setJobReadiness] = useInputState('');
-
-
-
-
-    
-
+    const [disability_data_status, setDisability] = useInputState('');
+    const [refugee_data_status, setRefugee] = useInputState('');
+    const [unemployed_data_status, setUnemployed] = useInputState('');
 
     switch (window.localStorage.role) {
         case 'aboriginal':
@@ -85,17 +76,27 @@ export default function ViewFormDetailVerifier(props) {
         props.history.push(path)
     }
     function handleSave() {
-
-        console.log(application._id)
         let update_data = application; 
         if (abo_existing_data_status !== ''){
             update_data.emp_abo[0].abo_existing_data_status = abo_existing_data_status
             update_data.abo_existing_data_status = abo_existing_data_status
             update_data.status = processing
+        }else if(disability_data_status !== ''){
+            update_data.emp_abo[0].disability_data_status = disability_data_status
+            update_data.disability_data_status = disability_data_status
+            update_data.status = processing
+        }else if(refugee_data_status !== ''){
+            update_data.emp_abo[0].refugee_data_status = refugee_data_status
+            update_data.refugee_data_status = refugee_data_status
+            update_data.status = processing
+        }else if(unemployed_data_status !== ''){
+            update_data.emp_abo[0].unemployed_data_status = unemployed_data_status
+            update_data.unemployed_data_status = unemployed_data_status
+            update_data.status = processing
         }
         axios({
             method: 'put',
-            url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application._id}`,
+            url: `http://localhost:8001/api/supplier/application/${application._id}`,
             data: { data: update_data },
             headers: {
                 'Content-Type': 'application/json',
@@ -116,8 +117,7 @@ export default function ViewFormDetailVerifier(props) {
 
     function handleStatus(e){
         const str = e.target.getAttribute('value') ? e.target.getAttribute('value'):e.target.parentNode.getAttribute('value') 
-        const button =  e.target.getAttribute('value') ? e.target:e.target.parentNode
-        console.log(str)
+
         switch (str) {
             case 'abo_existing_data_confirm':
               toggleAboExisting()
@@ -129,6 +129,36 @@ export default function ViewFormDetailVerifier(props) {
               setAboExisting('refute')
               document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
               break;
+            case 'disability_data_confirm':
+              toggleDisability()
+              setDisability('confirm')
+              document.querySelector("#disability_data_refute").setAttribute('hidden', '')
+              break;
+            case 'disability_data_refute':
+              toggleDisability()
+              setDisability('refute')
+              document.querySelector("#disability_data_confirm").setAttribute('hidden', '')
+              break;
+            case 'refugee_data_confirm':
+              toggleRefugee()
+              setRefugee('confirm')
+              document.querySelector("#refugee_data_refute").setAttribute('hidden', '')
+              break;
+            case 'refugee_data_refute':
+              toggleRefugee()
+              setRefugee('refute')
+              document.querySelector("#refugee_data_confirm").setAttribute('hidden', '')
+              break;
+            case 'unemployed_data_confirm':
+              toggleUnemployed()
+              setUnemployed('confirm')
+              document.querySelector("#unemployed_data_refute").setAttribute('hidden', '')
+              break;
+            case 'unemployed_data_refute':
+              toggleUnemployed()
+              setUnemployed('refute')
+              document.querySelector("#unemployed_data_confirm").setAttribute('hidden', '')
+              break;
             default:
               console.log('Sorry, no string match');
         }
@@ -136,11 +166,29 @@ export default function ViewFormDetailVerifier(props) {
 
     useEffect(() => {
         console.log(`更新後的 State`)
-        if (application.abo_existing_data_status){
+        if (application.abo_existing_data_status && abo_role){
             if(application.abo_existing_data_status === 'confirm'){
                 document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
             }else{
                 document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
+            }
+        }else if(application.disability_data_status && disability_role){
+            if(application.disability_data_status === 'confirm'){
+                document.querySelector("#disability_data_refute").setAttribute('hidden', '')
+            }else{
+                document.querySelector("#disability_data_confirm").setAttribute('hidden', '')
+            }
+        }else if(application.refugee_data_status && refugee_role){
+            if(application.refugee_data_status === 'confirm'){
+                document.querySelector("#refugee_data_refute").setAttribute('hidden', '')
+            }else{
+                document.querySelector("#refugee_data_confirm").setAttribute('hidden', '')
+            }
+        }else if(application.unemployed_data_status && unemployed_role){
+            if(application.unemployed_data_status === 'confirm'){
+                document.querySelector("#unemployed_data_refute").setAttribute('hidden', '')
+            }else{
+                document.querySelector("#unemployed_data_confirm").setAttribute('hidden', '')
             }
         }
         //componentDidUpdate 及 componentWillUnmount
@@ -217,10 +265,24 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                <ButtonGroup color="primary" aria-label="outlined primary button group">
-                                    <Button>Refute</Button>
-                                    <Button>Confirm</Button>
-                                </ButtonGroup>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='disability_data_refute' 
+                                        value='disability_data_refute' 
+                                        disabled={disability_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Refute
+                                    </Button>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='disability_data_confirm' 
+                                        value='disability_data_confirm' 
+                                        disabled={disability_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Confirm
+                                    </Button>
                             </Grid>
                         </Grid>
                         <Paper className={classes.root}>
@@ -253,10 +315,24 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                <ButtonGroup color="primary" aria-label="outlined primary button group">
-                                    <Button>Refute</Button>
-                                    <Button>Confirm</Button>
-                                </ButtonGroup>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='refugee_data_refute' 
+                                        value='refugee_data_refute' 
+                                        disabled={refugee_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Refute
+                                    </Button>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='refugee_data_confirm' 
+                                        value='refugee_data_confirm' 
+                                        disabled={refugee_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Confirm
+                                    </Button>
                             </Grid>
                         </Grid>
                         <Paper className={classes.root}>
@@ -289,10 +365,24 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                <ButtonGroup color="primary" aria-label="outlined primary button group">
-                                    <Button>Refute</Button>
-                                    <Button>Confirm</Button>
-                                </ButtonGroup>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='unemployed_data_refute' 
+                                        value='unemployed_data_refute' 
+                                        disabled={unemployed_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Refute
+                                    </Button>
+                                    <Button 
+                                        onClick={handleStatus} 
+                                        id='unemployed_data_confirm' 
+                                        value='unemployed_data_confirm' 
+                                        disabled={unemployed_data_button} 
+                                        color='primary' 
+                                        variant='outlined'>
+                                            Confirm
+                                    </Button>
                             </Grid>
                         </Grid>
 
