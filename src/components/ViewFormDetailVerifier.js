@@ -22,10 +22,26 @@ import axios from 'axios';
 
 
 export default function ViewFormDetailVerifier(props) {
+    const application = props.location.state.application
+    const aboriginal_data = application.emp_abo
+    const unemployed_data = application.emp_unemploy
+    const disability_data = application.emp_disability
+    const refugee_data = application.emp_refugee
+    const processing = 'Processing'
+    // check the role
+    let abo_role = false
+    let disability_role = false
+    let refugee_role = false
+    let unemployed_role = false
+    // check the button
+    let abo_button = false
+    if (application.abo_existing_data_status){
+            abo_button = true
+    }
 
     const classes = useViewFormDetailStyles();
 
-    const [abo_existing_data_button, toggleAboExisting] = useToggle(false);
+    const [abo_existing_data_button, toggleAboExisting] = useToggle(abo_button);
     const [abo_future_data_button, toggleAboFuture] = useToggle(false);
     const [cohorts_data_button, toggleCohorts] = useToggle(false);
     const [social_benefit_data_button, toggleSocialBenefit] = useToggle(false);
@@ -37,17 +53,12 @@ export default function ViewFormDetailVerifier(props) {
     const [social_benefit_data_status, setSocialBenefit] = useInputState('');
     const [job_readiness_data_status, setJobReadiness] = useInputState('');
 
-    const application = props.location.state.application
-    const aboriginal_data = application.emp_abo
-    const unemployed_data = application.emp_unemploy
-    const disability_data = application.emp_disability
-    const refugee_data = application.emp_refugee
+
+
+
     
-    let abo_role = false
-    let disability_role = false
-    let refugee_role = false
-    let unemployed_role = false
-    
+
+
     switch (window.localStorage.role) {
         case 'aboriginal':
           abo_role = true
@@ -75,22 +86,26 @@ export default function ViewFormDetailVerifier(props) {
     function handleSave() {
 
         console.log(application._id)
-        let data = new Object(); 
+        let update_data = application; 
         if (abo_existing_data_status !== ''){
-            data.abo_existing_data = abo_existing_data_status
+            update_data.emp_abo[0].abo_existing_data_status = abo_existing_data_status
+            update_data.abo_existing_data_status = abo_existing_data_status
+            update_data.status = processing
         }
         axios({
             method: 'put',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${application._id}`,
-            data: { data: data },
+            data: { data: update_data },
             headers: {
                 'Content-Type': 'application/json',
             }
         }).then(res => {
-
+            const data = props.location.state
+            let foundIndex = data.applications.findIndex(x => x._id == application._id);
+            data.applications[foundIndex] = update_data;
             const path = {
             pathname: '/viewformsverifier',
-            state: props.location.state,
+            state: data,
             }
             props.history.push(path)
         }).catch(err => {
@@ -120,11 +135,11 @@ export default function ViewFormDetailVerifier(props) {
 
     useEffect(() => {
         console.log(`更新後的 State`)
-        if (application.abo_existing_data_status !== ''){
+        if (application.abo_existing_data_status){
             if(application.abo_existing_data_status === 'confirm'){
                 document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
             }else{
-    
+                document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
             }
         }
         //componentDidUpdate 及 componentWillUnmount
