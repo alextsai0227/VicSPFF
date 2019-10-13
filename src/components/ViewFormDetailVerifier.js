@@ -40,16 +40,6 @@ export default function ViewFormDetailVerifier(props) {
     let refugee_button = application.refugee_data_status ? true : false
     let unemployed_button = application.unemployed_data_status ? true : false
 
-    // if (application.abo_existing_data_status){
-    //     abo_button = true
-    // }else if(application.disability_data_status){
-    //     disability_button = true
-    // }else if(application.refugee_data_status){
-    //     refugee_button = true
-    // }else if(application.unemployed_data_status){
-    //     unemployed_button = true
-    // }
-
     const classes = useViewFormDetailStyles();
 
     const [abo_existing_data_button, toggleAboExisting] = useToggle(abo_button);
