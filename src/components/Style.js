@@ -29,14 +29,19 @@ export const signUpStyles = makeStyles(theme => ({
   }
 }));
 
+// ProfileSupplier & ProfileVerifier
 export const supProfileStyles = makeStyles(theme => ({
   '@global': {
     body: {
-      backgroundColor: theme.palette.common.white,
+      backgroundColor: "#eeeeee",
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(8),
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
+    paddingBottom: theme.spacing(5),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -76,6 +81,11 @@ export const useToolbarStyles = makeStyles(theme => ({
 }));
 
 export const useGovenmentTalbeStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: "#eeeeee",
+    },
+  },
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
@@ -145,6 +155,11 @@ export const useAppBarStyles = makeStyles(theme => ({
 
 // ViewForms & ViewFormsVerifier
 export const useViewFormsStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: "#eeeeee",
+    },
+  },
   root: {
       width: '100%',
       marginTop: theme.spacing(3),
@@ -171,10 +186,20 @@ export const useViewFormsStyles = makeStyles(theme => ({
 
 // ViewFormDetail & ViewFormDetailVerifier
 export const useViewFormDetailStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: "#eeeeee",
+    },
+  },
   root: {
       width: '100%',
       marginTop: theme.spacing(3),
       overflowX: 'auto',
+  },
+  paper:{
+      padding: theme.spacing(3),
+      textAlign: 'left',
+      color: '#717171',
   },
   table: {
       minWidth: 650,

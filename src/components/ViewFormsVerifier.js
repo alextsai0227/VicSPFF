@@ -20,35 +20,40 @@ export default function ViewFormsVerifier(props) {
     const classes = useViewFormsStyles();
     const headCells = [
         { id: 'Application ID', alignright: false, label: 'Application ID' },
-        { id: 'Company Name', alignright: true, label: 'Company Name' },
-        { id: 'Created Date', alignright: true, label: 'Created Date' },
-        { id: 'Status', alignright: true, label: 'Status' },
+        { id: 'company_name', alignright: true, label: 'Company Name' },
+        { id: 'created_date', alignright: true, label: 'Created Date' },
+        { id: 'status', alignright: true, label: 'Status' },
     ];
     // conditions if (props.applications) use props.applications, if not use state
     const applications = props.location.state.applications
     const role = props.location.state.role
+    let status = ''
     const filter_application = applications.filter(application => {
         switch (role) {
             case 'aboriginal':
-                if (application.emp_abo.length > 0) {
+                if(application.emp_abo.length > 0){
+                    status = 'abo_existing_data_status'
                     return true
                 } else {
                     return false
                 }
             case 'disability':
-                if (application.emp_disability.length > 0) {
+                if(application.emp_disability.length > 0){
+                    status = 'disability_data_status'
                     return true
                 } else {
                     return false
                 }
             case 'refugee':
-                if (application.emp_refugee.length > 0) {
+                if(application.emp_refugee.length > 0){
+                    status = 'refugee_data_status'
                     return true
                 } else {
                     return false
                 }
             case 'unemployed':
-                if (application.emp_unemploy.length > 0) {
+                if(application.emp_unemploy.length > 0){
+                    status = 'unemployed_data_status'
                     return true
                 } else {
                     return false
@@ -57,11 +62,9 @@ export default function ViewFormsVerifier(props) {
                 console.log('Sorry, no string match');
         }
     })
-    console.log("ffffffffiiiiiiiiilllllllltttterrr");
-    console.log(filter_application);
-    console.log("-----------------------------------");
 
     function showApplicationDetail(evt) {
+        console.log(evt.target.parentNode)
         axios({
             method: 'get',
             url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/application/${evt.target.parentNode.getAttribute('value')}`
@@ -69,17 +72,32 @@ export default function ViewFormsVerifier(props) {
             const data = props.location.state
             data.application = res.data.application
             data.applications = applications
-            const path = {
-                pathname: '/viewformdetailverifier',
-                state: data,
-            }
-            props.history.push(path)
+            axios({
+                method: 'get',
+                url: `https://shielded-fjord-25564.herokuapp.com/api/supplier/user/${data.application.supplier_id}`
+            }).then(res =>{
+                data.user = res.data.user
+                const path = {
+                    pathname: '/viewformdetailverifier',
+                    state: data,
+                }
+                props.history.push(path)
+            }).catch(err => {
+
+            })
+            
+            
         }).catch(err => {
             console.log(err)
         });
     }
 
     // ************** For Sorting & Pagination ***************
+
+    const a = filter_application.map(application => {
+        return {_id:application._id, company_name: application.company_name, created_date: application.created_date, status: application[status]}
+    })
+    
     function desc(a, b, orderBy) {
         if (b[orderBy] < a[orderBy]) {
             return -1;
@@ -174,7 +192,7 @@ export default function ViewFormsVerifier(props) {
             <NaviBar />
             <Container component="main" maxWidth="md">
                 <br />
-                <h1> Application To Be Verified </h1>
+                <h1> Applications To Be Verified </h1>
                 <Paper className={classes.root}>
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} >
@@ -185,7 +203,7 @@ export default function ViewFormsVerifier(props) {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody onClick={showApplicationDetail}>
-                                {stableSort(filter_application, getSorting(order, orderBy))
+                                {stableSort(a, getSorting(order, orderBy))
                                     .map((row, index) => (
                                     <TableRow value={row._id} hover >
                                         <TableCell >{(index + 1).toString().padStart(3, '0')}</TableCell>
@@ -205,7 +223,7 @@ export default function ViewFormsVerifier(props) {
                     <TablePagination
                         rowsPerPageOptions={[10, 20]}
                         component="div"
-                        count={applications.length}  // 要扣掉沒有權限的
+                        count={filter_application.length}  
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}

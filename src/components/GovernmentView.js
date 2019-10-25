@@ -124,8 +124,10 @@ export default function GovernmentView() {
                 setApplications(res.data.applications);
             })
     }, applications)
-    console.log(applications);
 
+    console.log("a is --------");
+    console.log(a);
+    
     const classes = useGovenmentTalbeStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('overall');
