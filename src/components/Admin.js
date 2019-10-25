@@ -139,9 +139,7 @@ export default function Admin(props) {
               props.history.push('/NotFound')
             }
           } else {
-            console.log("==========73")
             if (window.localStorage.token) {
-              console.log("==========75")
               axios({
                 method: 'get',
                 url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
@@ -150,8 +148,6 @@ export default function Admin(props) {
                   'Authorization': `Token ${window.localStorage.token}`
                 },
               }).then(res => {
-                  console.log("==========84")
-                  console.log(res.data.user.role)
                 if(res.data.user.role === 'admin'){
                   updateAuth(true)
                 }else{
