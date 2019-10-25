@@ -1,6 +1,7 @@
 // Material UI
 import TextField from 'material-ui/TextField';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 
@@ -91,10 +92,11 @@ export default function ProfileVerifier(props) {
   return (
     <>
       <NaviBar props={props} />
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-
+      <Container component="main" maxWidth="sm">
+        <br />
           <h1> Verifier Profile</h1>
+
+          <Paper className={classes.paper} >
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -137,6 +139,7 @@ export default function ProfileVerifier(props) {
                 />
               </Grid>
             </Grid>
+            <br />
             <Button
               type="submit"
               value="Submit"
@@ -148,7 +151,7 @@ export default function ProfileVerifier(props) {
             >{readOnly ? "Edit" : "Save"}
             </Button>
           </form>
-        </div>
+        </Paper>
       </Container>
     </>
   );

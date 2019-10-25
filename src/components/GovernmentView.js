@@ -11,18 +11,19 @@ import Container from '@material-ui/core/Container';
 
 // React related package
 import React, { useEffect, useState } from 'react';
+import { Redirect } from "react-router-dom";
 import NaviBar from './AppBarGov';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useGovenmentTalbeStyles } from './Style'
 
 const headCells = [
-    { id: 'company_name', numeric: false, label: 'Company Name' },
-    { id: 'aboriginal', numeric: true, label: 'Aboriginal' },
-    { id: 'disability', numeric: true, label: 'Disability' },
-    { id: 'refugee', numeric: true, label: 'Refugee' },
-    { id: 'unemployed', numeric: true,  label: 'Unemployed' },
-    { id: 'overall', numeric: true, label: 'overall' },
+    { id: 'company_name', aligncenter: false, label: 'Company Name' },
+    { id: 'aboriginal', aligncenter: true, label: 'Aboriginal' },
+    { id: 'disability', aligncenter: true, label: 'Disability' },
+    { id: 'refugee', aligncenter: true, label: 'Refugee' },
+    { id: 'unemployed', aligncenter: true, label: 'Unemployed' },
+    { id: 'overall', aligncenter: true, label: 'overall' },
 ];
 
 function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
@@ -70,7 +71,7 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'center' : 'left'}
+                        align={headCell.aligncenter ? 'center' : 'left'}
                         padding='default'
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -100,9 +101,36 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-export default function GovernmentView() {
+export default function GovernmentView(props) {
+
+
+    let r_role = ''
+    if (props.location && props.location.state) {
+      const data = props.location.state
+      r_role = data.role
+    } else {
+      if (window.localStorage.token) {
+        axios({
+          method: 'get',
+          url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${window.localStorage.token}`
+          },
+        }).then(res => {
+          r_role = res.data.user.role
+          updateRole(r_role)
+        }).catch((err) => {
+          console.log(err.response)
+        });
+      } else {
+        props.history.push('login')
+      }
+    }
 
     const [applications, setApplications] = useState([]);
+    const [role, updateRole] = useState(r_role);
+    
 
     const a = applications.map(application => {
         const abo_future = (application.emp_abo.length > 0 && application.emp_abo[0].future_emp != null) ? Number(application.emp_abo[0].future_emp) : 0;
@@ -114,7 +142,7 @@ export default function GovernmentView() {
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
         const overall = getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
-        return {company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall }
+        return { company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall }
     })
 
 
@@ -123,9 +151,8 @@ export default function GovernmentView() {
             .then((res) => {
                 setApplications(res.data.applications);
             })
+        
     }, applications)
-    console.log(applications);
-
     const classes = useGovenmentTalbeStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('overall');
@@ -147,8 +174,13 @@ export default function GovernmentView() {
         setPage(0);
     };
 
-    return (
-        <>
+    var GovView;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, applications.length - page * rowsPerPage);
+
+    if(role === 'gov'){
+        GovView = 
+
+            <div>
             <NaviBar />
             <Container component="main" maxWidth="lg">
                 <br />
@@ -166,7 +198,7 @@ export default function GovernmentView() {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                {stableSort(a, getSorting(order, orderBy)) 
+                                {stableSort(a, getSorting(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((application, index) => {
 
@@ -179,7 +211,7 @@ export default function GovernmentView() {
                                                 <TableCell component="th" id={index} scope="application" padding="default">
                                                     {application.company_name}
                                                 </TableCell>
-                                                <TableCell align="center">{application.aboriginal}</TableCell> 
+                                                <TableCell align="center">{application.aboriginal}</TableCell>
                                                 <TableCell align="center">{application.disability}</TableCell>
                                                 <TableCell align="center">{application.refugee}</TableCell>
                                                 <TableCell align="center">{application.unemployed}</TableCell>
@@ -187,7 +219,11 @@ export default function GovernmentView() {
                                             </TableRow>
                                         );
                                     })}
-
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </div>
@@ -202,6 +238,17 @@ export default function GovernmentView() {
                     />
                 </Paper>
             </Container>
-        </>
+            </div>
+    }else{
+        GovView = <Redirect to="/notFound" />
+    }
+    
+
+    return (
+        <div>
+            {GovView}
+        </div>
+        
+        
     );
 }

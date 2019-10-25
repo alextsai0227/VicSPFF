@@ -1,6 +1,7 @@
 // Material UI
 import TextField from 'material-ui/TextField';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/paper';
 import Container from '@material-ui/core/Container';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -128,129 +129,130 @@ export default function ProfileSupplier(props) {
   return (
     <>
       <NaviBar props={props} />
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-
+      <Container component="main" maxWidth="sm">
+        <br />
           <h1>Supplier Profile</h1>
-          <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  floatingLabelText="Email Address"
-                  type="email"
-                  id="email"
-                  readOnly={true}  // ALWAYS TRUE
-                  value={email}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Enter Your Company Name"
-                  floatingLabelText="Company Name*"
-                  type="text"
-                  id="companyName"
-                  readOnly={readOnly}
-                  value={companyName}
-                  onChange={e => updateCompanyName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Enter Your ABN"
-                  floatingLabelText="ABN*"
-                  type="text"
-                  id="abn"
-                  readOnly={readOnly}
-                  value={abn}
-                  onChange={e => updateAbn(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Enter Your Phone Number"
-                  floatingLabelText="Phone*"
-                  type="text"
-                  id="phone"
-                  readOnly={readOnly}
-                  value={phone}
-                  onChange={e => updatePhone(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Enter Your Street"
-                  floatingLabelText="Street*"
-                  type="text"
-                  id="street"
-                  readOnly={readOnly}
-                  value={street}
-                  onChange={e => updateStreet(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  hintText="Enter Your Suburb"
-                  floatingLabelText="Suburb*"
-                  type="text"
-                  id="suburb"
-                  readOnly={readOnly}
-                  value={suburb}
-                  onChange={e => updateSuburb(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                {readOnly ? (<TextField
-                  required
-                  fullWidth
-                  floatingLabelText="State*"
-                  value={state}
-                  readOnly={true}
-                ></TextField>)
-                  :
-                  (<Select
+          <Paper className={classes.paper} >
+            <form className={classes.form} noValidate onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    floatingLabelText="Email Address"
+                    type="email"
+                    id="email"
+                    readOnly={true}  // ALWAYS TRUE
+                    value={email}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
                     required
                     fullWidth
-                    hintText="Select Your State"
-                    floatingLabelText="State"
+                    hintText="Enter Your Company Name"
+                    floatingLabelText="Company Name*"
+                    type="text"
+                    id="companyName"
+                    readOnly={readOnly}
+                    value={companyName}
+                    onChange={e => updateCompanyName(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    hintText="Enter Your ABN"
+                    floatingLabelText="ABN*"
+                    type="text"
+                    id="abn"
+                    readOnly={readOnly}
+                    value={abn}
+                    onChange={e => updateAbn(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    hintText="Enter Your Phone Number"
+                    floatingLabelText="Phone*"
+                    type="text"
+                    id="phone"
+                    readOnly={readOnly}
+                    value={phone}
+                    onChange={e => updatePhone(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    hintText="Enter Your Street"
+                    floatingLabelText="Street*"
+                    type="text"
+                    id="street"
+                    readOnly={readOnly}
+                    value={street}
+                    onChange={e => updateStreet(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    hintText="Enter Your Suburb"
+                    floatingLabelText="Suburb*"
+                    type="text"
+                    id="suburb"
+                    readOnly={readOnly}
+                    value={suburb}
+                    onChange={e => updateSuburb(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  {readOnly ? (<TextField
+                    required
+                    fullWidth
+                    floatingLabelText="State*"
                     value={state}
-                    onChange={updateState}
-                    input={<Input name="state" id="state" />}
-                  >
-                    <MenuItem value=""></MenuItem>
-                    <MenuItem value="NSW">NSW</MenuItem>
-                    <MenuItem value="VIC">VIC</MenuItem>
-                    <MenuItem value="QLD">QLD</MenuItem>
-                    <MenuItem value="WA">WA</MenuItem>
-                    <MenuItem value="SA">SA</MenuItem>
-                    <MenuItem value="TAS">TAS</MenuItem>
-                    <MenuItem value="ACT">ACT</MenuItem>
-                    <MenuItem value="NT">NT</MenuItem>
-                  </Select>)}
+                    readOnly={true}
+                  ></TextField>)
+                    :
+                    (<Select
+                      required
+                      fullWidth
+                      hintText="Select Your State"
+                      floatingLabelText="State"
+                      value={state}
+                      onChange={updateState}
+                      input={<Input name="state" id="state" />}
+                    >
+                      <MenuItem value=""></MenuItem>
+                      <MenuItem value="NSW">NSW</MenuItem>
+                      <MenuItem value="VIC">VIC</MenuItem>
+                      <MenuItem value="QLD">QLD</MenuItem>
+                      <MenuItem value="WA">WA</MenuItem>
+                      <MenuItem value="SA">SA</MenuItem>
+                      <MenuItem value="TAS">TAS</MenuItem>
+                      <MenuItem value="ACT">ACT</MenuItem>
+                      <MenuItem value="NT">NT</MenuItem>
+                    </Select>)}
+                </Grid>
               </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              value="Submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={toggle}
-            >{readOnly ? "Edit" : "Save"}
-            </Button>
-          </form>
-        </div>
+              <br />
+              <Button
+                type="submit"
+                value="Submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={toggle}
+              >{readOnly ? "Edit" : "Save"}
+              </Button>
+            </form>
+          </Paper>
       </Container>
     </>
   );

@@ -22,12 +22,25 @@ import axios from 'axios';
 
 
 export default function ViewFormDetailVerifier(props) {
+
+
+
     const application = props.location.state.application
     const aboriginal_data = application.emp_abo
     const unemployed_data = application.emp_unemploy
     const disability_data = application.emp_disability
     const refugee_data = application.emp_refugee
     const processing = 'Processing'
+    
+    const user = props.location.state.user
+    const companyName = user.company_name
+    const abn = user.abn
+    const email = user.email
+    const phone = user.phone
+    const street = user.street
+    const suburb = user.suburb
+    const state = user.state
+
     // check the role
     let abo_role = false
     let disability_role = false
@@ -53,19 +66,19 @@ export default function ViewFormDetailVerifier(props) {
 
     switch (window.localStorage.role) {
         case 'aboriginal':
-          abo_role = true
-          break;
+            abo_role = true
+            break;
         case 'disability':
-          disability_role = true
-          break;
+            disability_role = true
+            break;
         case 'refugee':
-          refugee_role = true
-          break;
+            refugee_role = true
+            break;
         case 'unemployed':
-          unemployed_role = true
-          break;
+            unemployed_role = true
+            break;
         default:
-          console.log('Sorry, no string match');
+            console.log('Sorry, no string match');
     }
 
     function handleBack() {
@@ -76,20 +89,20 @@ export default function ViewFormDetailVerifier(props) {
         props.history.push(path)
     }
     function handleSave() {
-        let update_data = application; 
-        if (abo_existing_data_status !== ''){
+        let update_data = application;
+        if (abo_existing_data_status !== '') {
             update_data.emp_abo[0].abo_existing_data_status = abo_existing_data_status
             update_data.abo_existing_data_status = abo_existing_data_status
             update_data.status = processing
-        }else if(disability_data_status !== ''){
+        } else if (disability_data_status !== '') {
             update_data.emp_disability[0].disability_data_status = disability_data_status
             update_data.disability_data_status = disability_data_status
             update_data.status = processing
-        }else if(refugee_data_status !== ''){
+        } else if (refugee_data_status !== '') {
             update_data.emp_refugee[0].refugee_data_status = refugee_data_status
             update_data.refugee_data_status = refugee_data_status
             update_data.status = processing
-        }else if(unemployed_data_status !== ''){
+        } else if (unemployed_data_status !== '') {
             update_data.emp_unemploy[0].unemployed_data_status = unemployed_data_status
             update_data.unemployed_data_status = unemployed_data_status
             update_data.status = processing
@@ -106,8 +119,8 @@ export default function ViewFormDetailVerifier(props) {
             let foundIndex = data.applications.findIndex(x => x._id == application._id);
             data.applications[foundIndex] = update_data;
             const path = {
-            pathname: '/viewformsverifier',
-            state: data,
+                pathname: '/viewformsverifier',
+                state: data,
             }
             props.history.push(path)
         }).catch(err => {
@@ -115,88 +128,89 @@ export default function ViewFormDetailVerifier(props) {
         });
     }
 
-    function handleStatus(e){
-        const str = e.target.getAttribute('value') ? e.target.getAttribute('value'):e.target.parentNode.getAttribute('value') 
+    function handleStatus(e) {
+        const str = e.target.getAttribute('value') ? e.target.getAttribute('value') : e.target.parentNode.getAttribute('value')
 
         switch (str) {
             case 'abo_existing_data_confirm':
-              toggleAboExisting()
-              setAboExisting('confirm')
-              document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
-              break;
+                toggleAboExisting()
+                setAboExisting('confirm')
+                document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
+                break;
             case 'abo_existing_data_refute':
-              toggleAboExisting()
-              setAboExisting('refute')
-              document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
-              break;
+                toggleAboExisting()
+                setAboExisting('refute')
+                document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
+                break;
             case 'disability_data_confirm':
-              toggleDisability()
-              setDisability('confirm')
-              document.querySelector("#disability_data_refute").setAttribute('hidden', '')
-              break;
+                toggleDisability()
+                setDisability('confirm')
+                document.querySelector("#disability_data_refute").setAttribute('hidden', '')
+                break;
             case 'disability_data_refute':
-              toggleDisability()
-              setDisability('refute')
-              document.querySelector("#disability_data_confirm").setAttribute('hidden', '')
-              break;
+                toggleDisability()
+                setDisability('refute')
+                document.querySelector("#disability_data_confirm").setAttribute('hidden', '')
+                break;
             case 'refugee_data_confirm':
-              toggleRefugee()
-              setRefugee('confirm')
-              document.querySelector("#refugee_data_refute").setAttribute('hidden', '')
-              break;
+                toggleRefugee()
+                setRefugee('confirm')
+                document.querySelector("#refugee_data_refute").setAttribute('hidden', '')
+                break;
             case 'refugee_data_refute':
-              toggleRefugee()
-              setRefugee('refute')
-              document.querySelector("#refugee_data_confirm").setAttribute('hidden', '')
-              break;
+                toggleRefugee()
+                setRefugee('refute')
+                document.querySelector("#refugee_data_confirm").setAttribute('hidden', '')
+                break;
             case 'unemployed_data_confirm':
-              toggleUnemployed()
-              setUnemployed('confirm')
-              document.querySelector("#unemployed_data_refute").setAttribute('hidden', '')
-              break;
+                toggleUnemployed()
+                setUnemployed('confirm')
+                document.querySelector("#unemployed_data_refute").setAttribute('hidden', '')
+                break;
             case 'unemployed_data_refute':
-              toggleUnemployed()
-              setUnemployed('refute')
-              document.querySelector("#unemployed_data_confirm").setAttribute('hidden', '')
-              break;
+                toggleUnemployed()
+                setUnemployed('refute')
+                document.querySelector("#unemployed_data_confirm").setAttribute('hidden', '')
+                break;
             default:
-              console.log('Sorry, no string match');
+                console.log('Sorry, no string match');
         }
     }
 
     useEffect(() => {
         console.log(`更新後的 State`)
-        if (application.abo_existing_data_status && abo_role){
-            if(application.abo_existing_data_status === 'confirm'){
+        if (application.abo_existing_data_status && abo_role) {
+            if (application.abo_existing_data_status === 'confirm') {
                 document.querySelector("#abo_existing_data_refute").setAttribute('hidden', '')
-            }else{
+            } else {
                 document.querySelector("#abo_existing_data_confirm").setAttribute('hidden', '')
             }
-        }else if(application.disability_data_status && disability_role){
-            if(application.disability_data_status === 'confirm'){
+        } else if (application.disability_data_status && disability_role) {
+            if (application.disability_data_status === 'confirm') {
                 document.querySelector("#disability_data_refute").setAttribute('hidden', '')
-            }else{
+            } else {
                 document.querySelector("#disability_data_confirm").setAttribute('hidden', '')
             }
-        }else if(application.refugee_data_status && refugee_role){
-            if(application.refugee_data_status === 'confirm'){
+        } else if (application.refugee_data_status && refugee_role) {
+            if (application.refugee_data_status === 'confirm') {
                 document.querySelector("#refugee_data_refute").setAttribute('hidden', '')
-            }else{
+            } else {
                 document.querySelector("#refugee_data_confirm").setAttribute('hidden', '')
             }
-        }else if(application.unemployed_data_status && unemployed_role){
-            if(application.unemployed_data_status === 'confirm'){
+        } else if (application.unemployed_data_status && unemployed_role) {
+            if (application.unemployed_data_status === 'confirm') {
                 document.querySelector("#unemployed_data_refute").setAttribute('hidden', '')
-            }else{
+            } else {
                 document.querySelector("#unemployed_data_confirm").setAttribute('hidden', '')
             }
         }
         //componentDidUpdate 及 componentWillUnmount
         return (() => {
-          console.log(`更新前的 State`)
+            console.log(`更新前的 State`)
         })
-    
-      })
+
+
+    })
 
     return (
         <div>
@@ -205,7 +219,26 @@ export default function ViewFormDetailVerifier(props) {
                 <br />
                 <h1> Application Details</h1>
                 <br />
-                {abo_role && 
+                <div>
+                    <Grid container spacing={3}>
+                        <Grid item xs={8}>
+                            <Typography component="h2" variant="h5" align="left">
+                                Supplier Detail
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </div>
+                <br />
+                <Paper className={classes.paper}>
+                    <h6>Company Name: {companyName}</h6>
+                    <h6>ABN: {abn}</h6>
+                    <h6>Email: {email}</h6>
+                    <h6>Phone: {phone}</h6>
+                    <h6>Address: {street} {suburb} {state}</h6>
+                </Paper>
+
+                <br /><br />
+                {abo_role &&
                     <div>
                         <Grid container spacing={3}>
                             <Grid item xs={8}>
@@ -214,23 +247,23 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='abo_existing_data_refute' 
-                                        value='abo_existing_data_refute' 
-                                        disabled={abo_existing_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Refute
+                                <Button
+                                    onClick={handleStatus}
+                                    id='abo_existing_data_refute'
+                                    value='abo_existing_data_refute'
+                                    disabled={abo_existing_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Refute
                                     </Button>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='abo_existing_data_confirm' 
-                                        value='abo_existing_data_confirm' 
-                                        disabled={abo_existing_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Confirm
+                                <Button
+                                    onClick={handleStatus}
+                                    id='abo_existing_data_confirm'
+                                    value='abo_existing_data_confirm'
+                                    disabled={abo_existing_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Confirm
                                     </Button>
                             </Grid>
                         </Grid>
@@ -256,7 +289,7 @@ export default function ViewFormDetailVerifier(props) {
                     </div>
                 }
 
-                {disability_role && 
+                {disability_role &&
                     <div>
                         <Grid container spacing={3}>
                             <Grid item xs={8}>
@@ -265,23 +298,23 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='disability_data_refute' 
-                                        value='disability_data_refute' 
-                                        disabled={disability_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Refute
+                                <Button
+                                    onClick={handleStatus}
+                                    id='disability_data_refute'
+                                    value='disability_data_refute'
+                                    disabled={disability_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Refute
                                     </Button>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='disability_data_confirm' 
-                                        value='disability_data_confirm' 
-                                        disabled={disability_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Confirm
+                                <Button
+                                    onClick={handleStatus}
+                                    id='disability_data_confirm'
+                                    value='disability_data_confirm'
+                                    disabled={disability_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Confirm
                                     </Button>
                             </Grid>
                         </Grid>
@@ -306,7 +339,7 @@ export default function ViewFormDetailVerifier(props) {
                     </div>
                 }
 
-                {refugee_role && 
+                {refugee_role &&
                     <div>
                         <Grid container spacing={3}>
                             <Grid item xs={8}>
@@ -315,23 +348,23 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='refugee_data_refute' 
-                                        value='refugee_data_refute' 
-                                        disabled={refugee_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Refute
+                                <Button
+                                    onClick={handleStatus}
+                                    id='refugee_data_refute'
+                                    value='refugee_data_refute'
+                                    disabled={refugee_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Refute
                                     </Button>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='refugee_data_confirm' 
-                                        value='refugee_data_confirm' 
-                                        disabled={refugee_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Confirm
+                                <Button
+                                    onClick={handleStatus}
+                                    id='refugee_data_confirm'
+                                    value='refugee_data_confirm'
+                                    disabled={refugee_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Confirm
                                     </Button>
                             </Grid>
                         </Grid>
@@ -356,7 +389,7 @@ export default function ViewFormDetailVerifier(props) {
                     </div>
                 }
 
-                {unemployed_role && 
+                {unemployed_role &&
                     <div>
                         <Grid container spacing={3}>
                             <Grid item xs={8}>
@@ -365,23 +398,23 @@ export default function ViewFormDetailVerifier(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='unemployed_data_refute' 
-                                        value='unemployed_data_refute' 
-                                        disabled={unemployed_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Refute
+                                <Button
+                                    onClick={handleStatus}
+                                    id='unemployed_data_refute'
+                                    value='unemployed_data_refute'
+                                    disabled={unemployed_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Refute
                                     </Button>
-                                    <Button 
-                                        onClick={handleStatus} 
-                                        id='unemployed_data_confirm' 
-                                        value='unemployed_data_confirm' 
-                                        disabled={unemployed_data_button} 
-                                        color='primary' 
-                                        variant='outlined'>
-                                            Confirm
+                                <Button
+                                    onClick={handleStatus}
+                                    id='unemployed_data_confirm'
+                                    value='unemployed_data_confirm'
+                                    disabled={unemployed_data_button}
+                                    color='primary'
+                                    variant='outlined'>
+                                    Confirm
                                     </Button>
                             </Grid>
                         </Grid>

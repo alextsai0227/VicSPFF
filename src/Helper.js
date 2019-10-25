@@ -14,6 +14,7 @@ export const setSupplierData = (data) => {
     window.VIC.abn = data.abn
     window.localStorage.u_id = data._id
     window.localStorage.company_name = data.company_name
+    window.localStorage.role = data.role
 };
 
 export const setVerifierData = (data) => {  
@@ -22,6 +23,18 @@ export const setVerifierData = (data) => {
     window.VIC.company_name = data.company_name
     window.VIC.activity_type = data.activity_type
     window.VIC.abn = data.abn
+    window.VIC.role = data.role
+    window.localStorage.u_id = data._id
+    window.localStorage.role = data.role
+};
+
+export const setGovData = (data) => {  
+    data = data
+    window.VIC.data = data
+    window.VIC.company_name = data.company_name
+    window.VIC.activity_type = data.activity_type
+    window.VIC.abn = data.abn
+    window.VIC.role = data.role
     window.localStorage.u_id = data._id
     window.localStorage.role = data.role
 };

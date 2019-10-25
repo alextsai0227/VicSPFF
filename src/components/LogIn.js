@@ -17,7 +17,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useInputState } from './Hooks';
 import { signUpStyles } from './Style'
-import { saveToken, setSupplierData, setVerifierData } from '../Helper'
+import { saveToken, setSupplierData, setVerifierData, setGovData } from '../Helper'
 import axios from 'axios';
 
 export default function LogIn(props) {
@@ -29,7 +29,8 @@ export default function LogIn(props) {
 
     const roles = [
         { value: 'supplier', label: 'Supplier' },
-        { value: 'verifier', label: 'Verifier' }
+        { value: 'verifier', label: 'Verifier' },
+        { value: 'gov', label: 'Gov' }
     ];
 
     const handleSubmit = (evt) => {
@@ -54,7 +55,7 @@ export default function LogIn(props) {
             }).catch(() => {
                 setLoginFailed(true);
             })
-        } else {
+        } else if(role === 'verifier') {
             // login verifier
             axios.post(`https://shielded-fjord-25564.herokuapp.com/api/verifier/login`, { user }).then(res => {
                 saveToken(res['data']['user'])
@@ -64,6 +65,29 @@ export default function LogIn(props) {
                 const path = {
                     pathname: `/ver-profile`,
                     state: data,
+                }
+                props.history.push(path)
+            }).catch(() => {
+                setLoginFailed(true);
+            })
+        } else if(role === 'gov') {
+            // login verifier
+            axios.post(`https://shielded-fjord-25564.herokuapp.com/api/gov/login`, { user }).then(res => {
+                saveToken(res['data']['user'])
+                const { user } = res['data']
+                const data = user;
+                setGovData(data)
+                let path;
+                if (user.role === 'admin'){
+                    path = {
+                        pathname: `/admin`,
+                        state: data,
+                    }
+                }else{
+                    path = {
+                        pathname: `/gov`,
+                        state: data,
+                    }
                 }
                 props.history.push(path)
             }).catch(() => {
