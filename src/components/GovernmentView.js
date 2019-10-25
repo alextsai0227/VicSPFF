@@ -11,6 +11,7 @@ import Container from '@material-ui/core/Container';
 
 // React related package
 import React, { useEffect, useState } from 'react';
+import { Redirect } from "react-router-dom";
 import NaviBar from './AppBarGov';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -100,9 +101,36 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-export default function GovernmentView() {
+export default function GovernmentView(props) {
+
+
+    let r_role = ''
+    if (props.location && props.location.state) {
+      const data = props.location.state
+      r_role = data.role
+    } else {
+      if (window.localStorage.token) {
+        axios({
+          method: 'get',
+          url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${window.localStorage.token}`
+          },
+        }).then(res => {
+          r_role = res.data.user.role
+          updateRole(r_role)
+        }).catch((err) => {
+          console.log(err.response)
+        });
+      } else {
+        props.history.push('login')
+      }
+    }
 
     const [applications, setApplications] = useState([]);
+    const [role, updateRole] = useState(r_role);
+    
 
     const a = applications.map(application => {
         const abo_future = (application.emp_abo.length > 0 && application.emp_abo[0].future_emp != null) ? Number(application.emp_abo[0].future_emp) : 0;
@@ -123,9 +151,8 @@ export default function GovernmentView() {
             .then((res) => {
                 setApplications(res.data.applications);
             })
+        
     }, applications)
-    console.log(applications);
-
     const classes = useGovenmentTalbeStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('overall');
@@ -147,8 +174,11 @@ export default function GovernmentView() {
         setPage(0);
     };
 
-    return (
-        <>
+    var GovView;
+    if(role === 'gov'){
+        GovView = 
+
+            <div>
             <NaviBar />
             <Container component="main" maxWidth="lg">
                 <br />
@@ -202,6 +232,17 @@ export default function GovernmentView() {
                     />
                 </Paper>
             </Container>
-        </>
+            </div>
+    }else{
+        GovView = <Redirect to="/notFound" />
+    }
+    
+
+    return (
+        <div>
+            {GovView}
+        </div>
+        
+        
     );
 }

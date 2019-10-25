@@ -11,6 +11,7 @@ import ProfileSupplier from './components/ProfileSupplier';
 import ProfileVerifier from './components/ProfileVerifier';
 import GovernmentView from './components/GovernmentView';
 import Home from './components/Home';
+import NotFound from './components/NotFound'
 import './App.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route exact path='/sup-profile' component={withRouter(ProfileSupplier)} />
           <Route exact path='/ver-profile' component={withRouter(ProfileVerifier)} />
           <Route exact path='/gov' component={withRouter(GovernmentView)} />
+          <Route component={withRouter(NotFound)} />
         </Switch>
       </BrowserRouter>
     </div>
