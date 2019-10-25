@@ -12,6 +12,8 @@ import ProfileVerifier from './components/ProfileVerifier';
 import GovernmentView from './components/GovernmentView';
 import Home from './components/Home';
 import NotFound from './components/NotFound'
+import Admin from './components/Admin'
+
 import './App.css';
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path='/' component={withRouter(Home)} />
+          <Route exact path='/admin' component={withRouter(Admin)} />
           <Route exact path='/viewforms' component={withRouter(ViewForms)} />
           <Route exact path='/viewformsverifier' component={withRouter(ViewFormsVerifier)} />
           <Route exact path='/viewformdetail' component={withRouter(ViewFormDetail)} />
