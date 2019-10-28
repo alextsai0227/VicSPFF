@@ -13,7 +13,8 @@ import GovernmentView from './components/GovernmentView';
 import Home from './components/Home';
 import NotFound from './components/NotFound'
 import Admin from './components/Admin'
-
+import FutureResultTable from './components/FutureResultTable'
+import HistoryDetail from './components/HistoryApplications'
 import './App.css';
 
 function App() {
@@ -33,6 +34,8 @@ function App() {
           <Route exact path='/sup-profile' component={withRouter(ProfileSupplier)} />
           <Route exact path='/ver-profile' component={withRouter(ProfileVerifier)} />
           <Route exact path='/gov' component={withRouter(GovernmentView)} />
+          <Route exact path='/future_result' component={withRouter(FutureResultTable)} />
+          <Route exact path='/history_detail' component={withRouter(HistoryDetail)} />
           <Route component={withRouter(NotFound)} />
         </Switch>
       </BrowserRouter>

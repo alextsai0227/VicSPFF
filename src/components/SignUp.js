@@ -21,10 +21,13 @@ import { Link } from 'react-router-dom';
 import { useInputState } from './Hooks';
 import { saveToken, setSupplierData } from '../Helper';
 import axios from 'axios';
+import PasswordStrengthMeter from './PasswordStrengthMeter';
+import Notifications ,{notify} from 'react-notify-toast';
 
 export default function SignUp(props) {
     const classes = signUpStyles();
     const [signUpFailed, setSignUpFailed] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState("");
     const [email, updateEmail] = useInputState('');
     // const [role, updateRole] = useInputState('');
     const [password, updatePassword] = useInputState('');
@@ -35,29 +38,36 @@ export default function SignUp(props) {
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        const user = {
-            email: email,
-            password: password
-        };
-        axios.post(`https://shielded-fjord-25564.herokuapp.com/api/supplier`, { user }).then(res => {
-            saveToken(res['data']['user'])
-            const { user } = res['data'];
-            const data = user;
-            setSupplierData(data);
-            const path = {
-                pathname: '/sup-profile',
-                state: data,
-            }
-            props.history.push(path)
-        }).catch(err => {
-            setSignUpFailed(true);
-        })
+        setPasswordStrength(document.querySelector("progress").value);
+        if(passwordStrength >= 3){
+            const user = {
+                email: email,
+                password: password
+            };
+            axios.post(`https://shielded-fjord-25564.herokuapp.com/api/supplier`, { user }).then(res => {
+                saveToken(res['data']['user'])
+                const { user } = res['data'];
+                const data = user;
+                setSupplierData(data);
+                const path = {
+                    pathname: '/sup-profile',
+                    state: data,
+                }
+                props.history.push(path)
+            }).catch(err => {
+                setSignUpFailed(true);
+            })
+        }else{
+            notify.show("Please set a strong password." , "custom", 5000, { background:'red', text: "#FFFFFF" });
+        }
+        
     }
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+            <Notifications />
 
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -100,6 +110,7 @@ export default function SignUp(props) {
                                 onChange={updatePassword}
                             />
                         </Grid>
+                        <PasswordStrengthMeter password={password} />
                         {/*<Grid item xs={12}>
                         <FormControlLabel
                             control={<Checkbox value="agreePolicy" color="primary" />}
