@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
+import TextField from 'material-ui/TextField';
+import Grid from '@material-ui/core/Grid';
 
 // React related package
 import React, { useEffect, useState } from 'react';
@@ -23,7 +25,8 @@ const headCells = [
     { id: 'disability', aligncenter: true, label: 'Disability' },
     { id: 'refugee', aligncenter: true, label: 'Refugee' },
     { id: 'unemployed', aligncenter: true, label: 'Unemployed' },
-    { id: 'overall', aligncenter: true, label: 'overall' },
+    { id: 'overall', aligncenter: true, label: 'Overall' },
+    { id: 'created_date', aligncenter: false, label: 'Created Date' },
 ];
 
 function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
@@ -106,31 +109,34 @@ export default function GovernmentView(props) {
 
     let r_role = ''
     if (props.location && props.location.state) {
-      const data = props.location.state
-      r_role = data.role
+        const data = props.location.state
+        r_role = data.role
     } else {
-      if (window.localStorage.token) {
-        axios({
-          method: 'get',
-          url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${window.localStorage.token}`
-          },
-        }).then(res => {
-          r_role = res.data.user.role
-          updateRole(r_role)
-        }).catch((err) => {
-          console.log(err.response)
-        });
-      } else {
-        props.history.push('login')
-      }
+        if (window.localStorage.token) {
+            axios({
+                method: 'get',
+                url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${window.localStorage.token}`
+                },
+            }).then(res => {
+                r_role = res.data.user.role
+                updateRole(r_role)
+            }).catch((err) => {
+                console.log(err.response)
+            });
+        } else {
+            props.history.push('login')
+        }
     }
 
+    let w_curr, w_fut;
     const [applications, setApplications] = useState([]);
     const [role, updateRole] = useState(r_role);
-    
+
+    console.log(applications);
+
 
     const a = applications.map(application => {
         const abo_future = (application.emp_abo.length > 0 && application.emp_abo[0].future_emp != null) ? Number(application.emp_abo[0].future_emp) : 0;
@@ -141,8 +147,10 @@ export default function GovernmentView(props) {
         const ref_current = (application.emp_refugee.length > 0 && application.emp_refugee[0].curr_emp != null) ? Number(application.emp_refugee[0].curr_emp) : 0;
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
+
         const overall = getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
-        return { company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall }
+        const created_date = application.created_date;
+        return { company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall, created_date: created_date }
     })
 
 
@@ -151,7 +159,7 @@ export default function GovernmentView(props) {
             .then((res) => {
                 setApplications(res.data.applications);
             })
-        
+
     }, applications)
     const classes = useGovenmentTalbeStyles();
     const [order, setOrder] = React.useState('asc');
@@ -177,78 +185,116 @@ export default function GovernmentView(props) {
     var GovView;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, applications.length - page * rowsPerPage);
 
-    if(role === 'gov'){
-        GovView = 
+    if (role === 'gov') {
+        GovView =
 
             <div>
-            <NaviBar />
-            <Container component="main" maxWidth="lg">
-                <br />
-                <h1> Results </h1>
-                <Paper className={classes.root}>
-                    <div className={classes.tableWrapper}>
-                        <Table
-                            className={classes.table}
-                            size='medium'
-                        >
-                            <EnhancedTableHead
-                                classes={classes}
-                                order={order}
-                                orderBy={orderBy}
-                                onRequestSort={handleRequestSort}
+                <NaviBar />
+                <Container component="main" maxWidth="lg">
+                    <br />
+                    <h1> Results </h1> <br />
+                    <Grid
+                        container
+                        spacing={6}
+                        direction="row"
+                        alignItems="center"
+                        justify="center">
+                        <Grid item xs={3}><h6>Weight For Current Recruitment</h6></Grid>
+                        <Grid item xs={3}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                defaultValue="0.3"
+                                type="number"
+                                min="0" max="1" step="0.05"
+                                id="w_curr"
+                                label="Weight For Current Employment"
+                                name="w_curr"
+                                value={w_curr}
+                            // onChange={updateEmail}
                             />
-                            <TableBody>
-                                {stableSort(a, getSorting(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((application, index) => {
+                        </Grid>
+                        <Grid item xs={3}><h6>Weight For Future Recruitment</h6></Grid>
+                        <Grid item xs={3}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                defaultValue="0.7"
+                                type="number"
+                                min="0" max="1" step="0.05"
+                                id="w_fut"
+                                label="Weight For Future Recruitment"
+                                name="w_fut"
+                                value={w_fut}
+                            // onChange={updateEmail}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Paper className={classes.root}>
+                        <div className={classes.tableWrapper}>
+                            <Table
+                                className={classes.table}
+                                size='medium'
+                            >
+                                <EnhancedTableHead
+                                    classes={classes}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onRequestSort={handleRequestSort}
+                                />
+                                <TableBody>
+                                    {stableSort(a, getSorting(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((application, index) => {
 
-                                        return (
-                                            <TableRow
-                                                hover
-                                                tabIndex={-1}
-                                                key={index}
-                                            >
-                                                <TableCell component="th" id={index} scope="application" padding="default">
-                                                    {application.company_name}
-                                                </TableCell>
-                                                <TableCell align="center">{application.aboriginal}</TableCell>
-                                                <TableCell align="center">{application.disability}</TableCell>
-                                                <TableCell align="center">{application.refugee}</TableCell>
-                                                <TableCell align="center">{application.unemployed}</TableCell>
-                                                <TableCell align="center">{application.overall} </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 20]}
-                        component="div"
-                        count={applications.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
-                </Paper>
-            </Container>
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    tabIndex={-1}
+                                                    key={index}
+                                                >
+                                                    <TableCell component="th" id={index} scope="application" padding="default">
+                                                        {application.company_name}
+                                                    </TableCell>
+                                                    <TableCell align="center" style={{color:application.abo_existing_data_status === "confirm" ? 'green':'black'}}>{application.aboriginal}</TableCell>
+                                                    <TableCell align="center">{application.disability}</TableCell>
+                                                    <TableCell align="center">{application.refugee}</TableCell>
+                                                    <TableCell align="center">{application.unemployed}</TableCell>
+                                                    <TableCell align="center">{application.overall} </TableCell>
+                                                    <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20]}
+                            component="div"
+                            count={applications.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+                </Container>
             </div>
-    }else{
+    } else {
         GovView = <Redirect to="/notFound" />
     }
-    
+
 
     return (
         <div>
             {GovView}
         </div>
-        
-        
+
+
     );
 }

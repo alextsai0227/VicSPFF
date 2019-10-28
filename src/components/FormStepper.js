@@ -105,7 +105,7 @@ export default function FormStepper(props) {
     <div>
       <NaviBar />
       <div className={classes.root}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
           {steps.map(label => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -120,7 +120,7 @@ export default function FormStepper(props) {
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
                 <br /><br />
                 <div className={classes.buttons}>
-                  <Button
+                  <Button color="text.secondary"
                     disabled={activeStep === 0 || activeStep === 5}
                     onClick={handleBack}
                     className={classes.backButton}

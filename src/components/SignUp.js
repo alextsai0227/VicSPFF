@@ -1,11 +1,8 @@
 // Material UI
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/paper';
 import TextField from '@material-ui/core/TextField';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -26,12 +23,7 @@ export default function SignUp(props) {
     const classes = signUpStyles();
     const [signUpFailed, setSignUpFailed] = useState(false);
     const [email, updateEmail] = useInputState('');
-    // const [role, updateRole] = useInputState('');
     const [password, updatePassword] = useInputState('');
-    // const roles = [
-    //     { value: 'supplier', label: 'Supplier'},
-    //     { value: 'verifier', label: 'Verifier'}
-    // ];
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
@@ -56,8 +48,8 @@ export default function SignUp(props) {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
+            {/* <CssBaseline /> */}
+            <Paper className={classes.paper}>
 
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -100,12 +92,6 @@ export default function SignUp(props) {
                                 onChange={updatePassword}
                             />
                         </Grid>
-                        {/*<Grid item xs={12}>
-                        <FormControlLabel
-                            control={<Checkbox value="agreePolicy" color="primary" />}
-                            label="By signing up, you agree to SPF's Term of Use and Privacy Policy."
-                        />
-                        </Grid>*/}
                     </Grid>
                     <Button
                         type="submit"
@@ -124,7 +110,7 @@ export default function SignUp(props) {
                         </Grid>
                     </Grid>
                 </form>
-            </div>
+            </Paper>
         </Container>
     );
 }
