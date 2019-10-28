@@ -77,9 +77,17 @@ export default function LogIn(props) {
                 const { user } = res['data']
                 const data = user;
                 setGovData(data)
-                const path = {
-                    pathname: `/gov`,
-                    state: data,
+                let path;
+                if (user.role === 'admin'){
+                    path = {
+                        pathname: `/admin`,
+                        state: data,
+                    }
+                }else{
+                    path = {
+                        pathname: `/gov`,
+                        state: data,
+                    }
                 }
                 props.history.push(path)
             }).catch(() => {

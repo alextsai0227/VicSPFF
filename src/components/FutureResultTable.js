@@ -11,9 +11,6 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import TextField from 'material-ui/TextField';
-
-
 
 // React related package
 import React, { useEffect, useState } from 'react';
@@ -30,8 +27,6 @@ const headCells = [
     { id: 'refugee', aligncenter: true, label: 'Refugee' },
     { id: 'unemployed', aligncenter: true, label: 'Unemployed' },
     { id: 'overall', aligncenter: true, label: 'overall' },
-    { id: 'created_date', aligncenter: false, label: 'Created Date' },
-
 ];
 
 function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
@@ -109,7 +104,7 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
 };
 
-export default function GovernmentView(props) {
+export default function FutureResultTable(props) {
 
 
     let r_role = ''
@@ -135,7 +130,7 @@ export default function GovernmentView(props) {
         props.history.push('login')
       }
     }
-    let w_curr, w_fut;
+
     const [applications, setApplications] = useState([]);
     const [role, updateRole] = useState(r_role);
     
@@ -150,11 +145,7 @@ export default function GovernmentView(props) {
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
         const overall = getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
-        const created_date = application.created_date;
-        return { company_name: application.company_name,
-                 aboriginal: abo_current, disability: disa_current,
-                 refugee: ref_current, unemployed: unemp_current,
-                 overall: overall, created_date: created_date }
+        return { company_name: application.company_name, aboriginal: abo_future, disability: disa_future, refugee: ref_future, unemployed: unemp_future, overall: overall }
     })
 
 
@@ -187,10 +178,11 @@ export default function GovernmentView(props) {
         setPage(0);
     };
 
-    const handleFuture = () => {
+    const handleCurrent = () => {
+        console.log("=========current")
         const data = {role: role}
         const path = {
-            pathname: '/future_result',
+            pathname: '/gov',
             state: data,
         }
         props.history.push(path)
@@ -200,13 +192,13 @@ export default function GovernmentView(props) {
         const filter_applications = window.applications.filter(application => application.company_name === evt.target.parentNode.getAttribute('value'))
         const chart_data = filter_applications.map(application => {
             return ({"year": application.created_date.substring(0, 4),
-             "aboriginal":application.emp_abo[0] ? application.emp_abo[0].curr_emp : 0,
+             "aboriginal":application.emp_abo[0] ? application.emp_abo[0].future_emp : 0,
              "aboriginalColor": "hsl(98, 70%, 50%)",
-             "disability":application.emp_disability[0] ? application.emp_disability[0].curr_emp : 0,
+             "disability":application.emp_disability[0] ? application.emp_disability[0].future_emp : 0,
              "disabilityColor": "hsl(111, 70%, 50%)",
-             "refugee":application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
+             "refugee":application.emp_refugee[0] ? application.emp_refugee[0].future_emp : 0,
              "refugeeColor": "hsl(268, 70%, 50%)",
-             "unemployed":application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
+             "unemployed":application.emp_unemploy[0] ? application.emp_unemploy[0].future_emp : 0,
              "unemployedColor": "hsl(170, 70%, 50%)"
             })})
         const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value')}
@@ -230,50 +222,13 @@ export default function GovernmentView(props) {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Typography component="h2" variant="h5" align="left">
-                           Current Employment Results
+                           Future Employment Results
                         </Typography>
                     </Grid>
                     <Grid item xs={4} align="right">
-                    <Button onClick={handleFuture} color="primary"  >Future Employee</Button>
+                    <Button onClick={handleCurrent} color="primary"  >Current Employee</Button>
                     </Grid>
                 </Grid>
-                <Grid
-                        container
-                        spacing={6}
-                        direction="row"
-                        alignItems="center"
-                        justify="center">
-                        <Grid item xs={3}><h6>Weight For Current Recruitment</h6></Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                defaultValue="0.3"
-                                type="number"
-                                min="0" max="1" step="0.05"
-                                id="w_curr"
-                                label="Weight For Current Employment"
-                                name="w_curr"
-                                value={w_curr}
-                            // onChange={updateEmail}
-                            />
-                        </Grid>
-                        <Grid item xs={3}><h6>Weight For Future Recruitment</h6></Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                defaultValue="0.7"
-                                type="number"
-                                min="0" max="1" step="0.05"
-                                id="w_fut"
-                                label="Weight For Future Recruitment"
-                                name="w_fut"
-                                value={w_fut}
-                            // onChange={updateEmail}
-                            />
-                        </Grid>
-                    </Grid>
                 <Paper className={classes.root}>
                     <div className={classes.tableWrapper}>
                         <Table
@@ -306,7 +261,6 @@ export default function GovernmentView(props) {
                                                 <TableCell align="center">{application.refugee}</TableCell>
                                                 <TableCell align="center">{application.unemployed}</TableCell>
                                                 <TableCell align="center">{application.overall} </TableCell>
-                                                <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
                                             </TableRow>
                                         );
                                     })}
