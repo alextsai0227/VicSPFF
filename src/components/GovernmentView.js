@@ -12,11 +12,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from 'material-ui/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
 // React related package
 import React, { useEffect, useState } from 'react';
@@ -28,20 +23,20 @@ import { useInputState } from './Hooks';
 import { useGovenmentTalbeStyles } from './Style'
 
 const headCells = [
-    { id: 'company_name', aligncenter: 'left', label: 'Company Name' },
-    { id: 'aboriginal', aligncenter: 'center', label: 'Aboriginal' },
-    { id: 'disability', aligncenter: 'center', label: 'Disability' },
-    { id: 'refugee', aligncenter: 'center', label: 'Refugee' },
-    { id: 'unemployed', aligncenter: 'center', label: 'Unemployed' },
-    { id: 'overall', aligncenter: 'center', label: 'overall' },
-    { id: 'created_date', aligncenter: 'right', label: 'Created Date' },
+    { id: 'company_name', align: 'left', label: 'Company Name' },
+    { id: 'aboriginal', align: 'center', label: 'Aboriginal' },
+    { id: 'disability', align: 'center', label: 'Disability' },
+    { id: 'refugee', align: 'center', label: 'Refugee' },
+    { id: 'unemployed', align: 'center', label: 'Unemployed' },
+    { id: 'overall', align: 'center', label: 'overall' },
+    { id: 'created_date', align: 'right', label: 'Created Date' },
 ];
 
-function getOverall(w_curr, w_fut, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
-    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * w_fut)
-    const disa_score = (disability_cur * w_curr + disability_fut * w_fut)
-    const refu_score = (refugee_cur * w_curr + refugee_fut * w_fut)
-    const unemp_score = (unemployed_cur * w_curr + unemployed_fut * w_fut)
+function getOverall(w_curr, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
+    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * (1-w_curr))
+    const disa_score = (disability_cur * w_curr + disability_fut *  (1-w_curr))
+    const refu_score = (refugee_cur * w_curr + refugee_fut *  (1-w_curr))
+    const unemp_score = (unemployed_cur * w_curr + unemployed_fut *  (1-w_curr))
     const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
     const rounded_overall = Math.round(overall * 100) / 100
     return rounded_overall;
@@ -180,7 +175,7 @@ export default function GovernmentView(props) {
         const ref_current = (application.emp_refugee.length > 0 && application.emp_refugee[0].curr_emp != null) ? Number(application.emp_refugee[0].curr_emp) : 0;
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
-        const overall = getOverall(w_curr, w_fut, abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
+        const overall = getOverall(w_curr, abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
         return {
             abo_status: abo_status, disa_status: disa_status,
             ref_status: ref_status, unemp_status: unemp_status,
@@ -239,22 +234,6 @@ export default function GovernmentView(props) {
         props.history.push(path)
     }
 
-    function showDialog() {
-        setOpen(true);
-    }
-
-    function closeDialog() {
-        setOpen(false);
-    }
-
-    function validateWeight() {
-        console.log("w_curr = " + w_curr + "   w_fut = " + w_fut);
-        if (w_curr + w_fut != 1) {
-            showDialog()
-        }
-    };
-
-
     var GovView;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, applications.length - page * rowsPerPage);
 
@@ -301,25 +280,18 @@ export default function GovernmentView(props) {
                             <TextField
                                 fullWidth
                                 variant="outlined"
-                                defaultValue="0.7"
+                                readOnly={true}
+                                defaultValue= {1-w_curr}
                                 type="number"
                                 min="0" max="1" step="0.05"
                                 id="w_fut"
                                 label="Weight For Future Recruitment"
                                 name="w_fut"
-                                value={w_fut}
+                                value={Math.round((1-w_curr) * 100) / 100}
                                 onChange={e => update_w_fut(e.target.value)}
                             />
                         </Grid>
-                        <Grid item xs={3}>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                onClick={validateWeight}
-                            >Recalculate Overall</Button>
-                        </Grid>
+                        
                     </Grid>
                     <Paper className={classes.root}>
                         <div className={classes.tableWrapper}>
@@ -403,16 +375,6 @@ export default function GovernmentView(props) {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </Paper>
-
-                    <Dialog open={open} onClose={closeDialog}>
-                        <DialogTitle id="alert-dialog-title">{"Incorrect Weight Sum"}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">The two weights must sum to 1.</DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={closeDialog} color="primary" autoFocus>OK</Button>
-                        </DialogActions>
-                    </Dialog>
 
                 </Container>
             </div>
