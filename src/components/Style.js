@@ -1,13 +1,19 @@
 import { makeStyles } from '@material-ui/core/styles';
 
+// login & signup
 export const signUpStyles = makeStyles(theme => ({
   '@global': {
     body: {
-      backgroundColor: theme.palette.common.white,
+      backgroundColor: "#eeeeee",
     },
   },
-  paper: {
+  paper: {    
     marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(8),
+    paddingTop: theme.spacing(6),
+    paddingLeft: theme.spacing(6),
+    paddingRight: theme.spacing(6),
+    paddingBottom: theme.spacing(5),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -63,7 +69,7 @@ export const supProfileStyles = makeStyles(theme => ({
   }
 }));
 
-// GovernmentView.js
+// Government' toolbar
 export const useToolbarStyles = makeStyles(theme => ({
   root: {
     paddingLeft: theme.spacing(2),
@@ -72,14 +78,12 @@ export const useToolbarStyles = makeStyles(theme => ({
   spacer: {
     flex: '1 1 100%',
   },
-  actions: {
-    // color: theme.palette.text.secondary,
-  },
   title: {
     flex: '0 0 auto',
   },
 }));
 
+// GovernmentView.js
 export const useGovenmentTalbeStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -93,6 +97,8 @@ export const useGovenmentTalbeStyles = makeStyles(theme => ({
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
+    padding : theme.spacing(2),
+    margin : theme.spacing(2),
   },
   table: {
     minWidth: 1050,
@@ -116,12 +122,17 @@ export const useGovenmentTalbeStyles = makeStyles(theme => ({
 
 // FormStepper.js
 export const useFormStepperStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: "#eeeeee",
+    },
+  },
   root: {
     width: '100%',
     margin: 'auto'
   },
-  backButton: {
-    marginRight: theme.spacing(1)
+ stepper: {
+    backgroundColor: "#eeeeee",
   },
   buttons: {
     width: '100%',
@@ -130,9 +141,8 @@ export const useFormStepperStyles = makeStyles(theme => ({
     textAlign: 'center',
   },
   backButton: {
-    backgroundColor: 'white',
     marginLeft: '25px',
-    marginRight: '25px',
+    marginRight: '25px', 
   },
   nextButton: {
     marginLeft: '25px',
