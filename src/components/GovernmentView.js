@@ -12,9 +12,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from 'material-ui/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 
 // React related package
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Redirect } from "react-router-dom";
 import NaviBar from './AppBarGov';
 import PropTypes from 'prop-types';
@@ -33,10 +38,10 @@ const headCells = [
 ];
 
 function getOverall(w_curr, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
-    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * (1-w_curr))
-    const disa_score = (disability_cur * w_curr + disability_fut *  (1-w_curr))
-    const refu_score = (refugee_cur * w_curr + refugee_fut *  (1-w_curr))
-    const unemp_score = (unemployed_cur * w_curr + unemployed_fut *  (1-w_curr))
+    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * (1 - w_curr))
+    const disa_score = (disability_cur * w_curr + disability_fut * (1 - w_curr))
+    const refu_score = (refugee_cur * w_curr + refugee_fut * (1 - w_curr))
+    const unemp_score = (unemployed_cur * w_curr + unemployed_fut * (1 - w_curr))
     const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
     const rounded_overall = Math.round(overall * 100) / 100
     return rounded_overall;
@@ -115,8 +120,6 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function GovernmentView(props) {
-
-
     let r_role = ''
     if (props.location && props.location.state) {
         const data = props.location.state
@@ -142,11 +145,9 @@ export default function GovernmentView(props) {
     }
 
     const classes = useGovenmentTalbeStyles();
-    const [open, setOpen] = React.useState(false);
     const [applications, setApplications] = useState([]);
     const [role, updateRole] = useState(r_role);
     const [w_curr, update_w_curr] = useInputState(0.3);
-    const [w_fut, update_w_fut] = useInputState(0.7);
 
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('overall');
@@ -161,26 +162,25 @@ export default function GovernmentView(props) {
                 const now_applications = res.data.applications.filter(application => application.created_date.substring(0, 4) === year.toString())
                 setApplications(now_applications);
             })
-
     }, applications)
 
-    const handlePreviousYear = () =>{
+    const handlePreviousYear = () => {
         console.log(year)
-        axios.get(`http://localhost:8001/api/verifier/applications/${year-1}`)
-        .then((res) => {
-            setApplications(res.data.applications);
-            setYear(year-1);
-        })
-        
+        axios.get(`http://localhost:8001/api/verifier/applications/${year - 1}`)
+            .then((res) => {
+                setApplications(res.data.applications);
+                setYear(year - 1);
+            })
+
     }
 
-    const handleNextYear = () =>{
-        axios.get(`http://localhost:8001/api/verifier/applications/${year+1}`)
-        .then((res) => {
-            setApplications(res.data.applications);
-            setYear(year+1);
-        })
-        
+    const handleNextYear = () => {
+        axios.get(`http://localhost:8001/api/verifier/applications/${year + 1}`)
+            .then((res) => {
+                setApplications(res.data.applications);
+                setYear(year + 1);
+            })
+
     }
 
     const a = applications.map(application => {
@@ -233,7 +233,7 @@ export default function GovernmentView(props) {
     }
 
     const showHistoryDetails = (evt) => {
-        if(evt.target.parentNode.getAttribute('value')){
+        if (evt.target.parentNode.getAttribute('value')) {
             const filter_applications = window.applications.filter(application => application.company_name === evt.target.parentNode.getAttribute('value'))
             const chart_data = filter_applications.map(application => {
                 return ({
@@ -255,7 +255,6 @@ export default function GovernmentView(props) {
             }
             props.history.push(path)
         }
-        
     }
 
     var GovView;
@@ -268,14 +267,12 @@ export default function GovernmentView(props) {
                 <NaviBar />
                 <Container component="main" maxWidth="lg">
                     <br />
-                    <Grid container spacing={3}>
-                        <Grid item xs={8}>
-                            <Typography component="h2" variant="h5" align="left">
-                                Current Employment Results
-                        </Typography>
+                    <Grid container spacing={6}>
+                        <Grid item xs={8} align="right">
+                            <h2>Current Employment Results</h2>
                         </Grid>
                         <Grid item xs={4} align="right">
-                            <Button onClick={handleFuture} color="primary"  >Future Employee</Button>
+                            <Button onClick={handleFuture} color="primary" >Switch To Future Employment Results</Button>
                         </Grid>
                     </Grid>
                     <Grid
@@ -305,23 +302,28 @@ export default function GovernmentView(props) {
                                 fullWidth
                                 variant="outlined"
                                 readOnly={true}
-                                defaultValue= {1-w_curr}
+                                defaultValue={1 - w_curr}
                                 type="number"
                                 min="0" max="1" step="0.05"
                                 id="w_fut"
                                 label="Weight For Future Recruitment"
                                 name="w_fut"
-                                value={Math.round((1-w_curr) * 100) / 100}
-                                onChange={e => update_w_fut(e.target.value)}
+                                value={Math.round((1 - w_curr) * 100) / 100}
                             />
                         </Grid>
+                        <Grid item xs={2} />
                         <Grid item xs={2}>
-                            <Button onClick={handlePreviousYear} color="primary" align="right" >Previous Year</Button>
+                            <Tooltip title="Previous Year">
+                                <IconButton color="primary" onClick={handlePreviousYear}>
+                                    <ChevronLeft />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Next Year">
+                                <IconButton color="primary" onClick={handleNextYear}>
+                                    <ChevronRight />
+                                </IconButton>
+                            </Tooltip>
                         </Grid>
-                        <Grid item xs={2}>
-                            <Button onClick={handleNextYear} color="primary" align="right">Next Year</Button>
-                        </Grid>
-                        
                     </Grid>
 
                     <Paper className={classes.root}>
@@ -406,19 +408,14 @@ export default function GovernmentView(props) {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </Paper>
-
                 </Container>
             </div>
     } else {
         GovView = <Redirect to="/notFound" />
     }
-
-
     return (
         <div>
             {GovView}
         </div>
-
-
     );
 }
