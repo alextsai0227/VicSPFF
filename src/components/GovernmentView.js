@@ -37,13 +37,13 @@ const headCells = [
     { id: 'created_date', align: 'right', label: 'Created Date' },
 ];
 
-function getOverall(w_curr, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
-    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * (1 - w_curr))
-    const disa_score = (disability_cur * w_curr + disability_fut * (1 - w_curr))
-    const refu_score = (refugee_cur * w_curr + refugee_fut * (1 - w_curr))
-    const unemp_score = (unemployed_cur * w_curr + unemployed_fut * (1 - w_curr))
-    const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
-    const rounded_overall = Math.round(overall * 100) / 100
+function getOverall(w_curr, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut, abo_status, disa_status, ref_status, unemp_status) {
+        const abo_score = abo_status === 'confirm' ? (aboriginal_cur * w_curr + aboriginal_fut * (1 - w_curr)) : 0
+        const disa_score = disa_status === 'confirm' ? (disability_cur * w_curr + disability_fut * (1 - w_curr)) : 0
+        const refu_score = ref_status === 'confirm' ? (refugee_cur * w_curr + refugee_fut * (1 - w_curr)) : 0
+        const unemp_score = unemp_status === 'confirm' ? (unemployed_cur * w_curr + unemployed_fut * (1 - w_curr)) : 0
+        const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
+        const rounded_overall = Math.round(overall * 100) / 100
     return rounded_overall;
 }
 
@@ -156,7 +156,7 @@ export default function GovernmentView(props) {
     const [year, setYear] = React.useState(2019);
 
     useEffect(() => {
-        axios.get(`http://localhost:8001/api/verifier/applications/`)
+        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications/`)
             .then((res) => {
                 window.applications = res.data.applications
                 const now_applications = res.data.applications.filter(application => application.created_date.substring(0, 4) === year.toString())
@@ -166,7 +166,7 @@ export default function GovernmentView(props) {
 
     const handlePreviousYear = () => {
         console.log(year)
-        axios.get(`http://localhost:8001/api/verifier/applications/${year - 1}`)
+        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications/${year - 1}`)
             .then((res) => {
                 setApplications(res.data.applications);
                 setYear(year - 1);
@@ -175,7 +175,7 @@ export default function GovernmentView(props) {
     }
 
     const handleNextYear = () => {
-        axios.get(`http://localhost:8001/api/verifier/applications/${year + 1}`)
+        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications/${year + 1}`)
             .then((res) => {
                 setApplications(res.data.applications);
                 setYear(year + 1);
@@ -196,7 +196,7 @@ export default function GovernmentView(props) {
         const ref_current = (application.emp_refugee.length > 0 && application.emp_refugee[0].curr_emp != null) ? Number(application.emp_refugee[0].curr_emp) : 0;
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
-        const overall = getOverall(w_curr, abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
+        const overall = getOverall(w_curr, abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future, abo_status, disa_status, ref_status, unemp_status)
         return {
             abo_status: abo_status, disa_status: disa_status,
             ref_status: ref_status, unemp_status: unemp_status,
