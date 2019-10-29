@@ -12,8 +12,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from 'material-ui/TextField';
-
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // React related package
 import React, { useEffect, useState } from 'react';
@@ -21,28 +24,29 @@ import { Redirect } from "react-router-dom";
 import NaviBar from './AppBarGov';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { useInputState } from './Hooks';
 import { useGovenmentTalbeStyles } from './Style'
 
 const headCells = [
-    { id: 'company_name', aligncenter: false, label: 'Company Name' },
-    { id: 'aboriginal', aligncenter: true, label: 'Aboriginal' },
-    { id: 'disability', aligncenter: true, label: 'Disability' },
-    { id: 'refugee', aligncenter: true, label: 'Refugee' },
-    { id: 'unemployed', aligncenter: true, label: 'Unemployed' },
-    { id: 'overall', aligncenter: true, label: 'overall' },
-    { id: 'created_date', aligncenter: false, label: 'Created Date' },
-
+    { id: 'company_name', aligncenter: 'left', label: 'Company Name' },
+    { id: 'aboriginal', aligncenter: 'center', label: 'Aboriginal' },
+    { id: 'disability', aligncenter: 'center', label: 'Disability' },
+    { id: 'refugee', aligncenter: 'center', label: 'Refugee' },
+    { id: 'unemployed', aligncenter: 'center', label: 'Unemployed' },
+    { id: 'overall', aligncenter: 'center', label: 'overall' },
+    { id: 'created_date', aligncenter: 'right', label: 'Created Date' },
 ];
 
-function getOverall(aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
-    const abo_score = (aboriginal_cur * 0.3 + aboriginal_fut * 0.7)
-    const disa_score = (disability_cur * 0.3 + disability_fut * 0.7)
-    const refu_score = (refugee_cur * 0.3 + refugee_fut * 0.7)
-    const unemp_score = (unemployed_cur * 0.3 + unemployed_fut * 0.7)
+function getOverall(w_curr, w_fut, aboriginal_cur, aboriginal_fut, disability_cur, disability_fut, refugee_cur, refugee_fut, unemployed_cur, unemployed_fut) {
+    const abo_score = (aboriginal_cur * w_curr + aboriginal_fut * w_fut)
+    const disa_score = (disability_cur * w_curr + disability_fut * w_fut)
+    const refu_score = (refugee_cur * w_curr + refugee_fut * w_fut)
+    const unemp_score = (unemployed_cur * w_curr + unemployed_fut * w_fut)
     const overall = (abo_score + disa_score + refu_score + unemp_score) / 4
     const rounded_overall = Math.round(overall * 100) / 100
     return rounded_overall;
 }
+
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -79,7 +83,13 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.aligncenter ? 'center' : 'left'}
+                        align={(() => {
+                            switch (headCell.aligncenter) {
+                                case 'left': return 'left';
+                                case 'right': return 'right';
+                                default: return 'center';
+                            }
+                        })()}
                         padding='default'
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -114,33 +124,54 @@ export default function GovernmentView(props) {
 
     let r_role = ''
     if (props.location && props.location.state) {
-      const data = props.location.state
-      r_role = data.role
+        const data = props.location.state
+        r_role = data.role
     } else {
-      if (window.localStorage.token) {
-        axios({
-          method: 'get',
-          url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${window.localStorage.token}`
-          },
-        }).then(res => {
-          r_role = res.data.user.role
-          updateRole(r_role)
-        }).catch((err) => {
-          console.log(err.response)
-        });
-      } else {
-        props.history.push('login')
-      }
+        if (window.localStorage.token) {
+            axios({
+                method: 'get',
+                url: `https://shielded-fjord-25564.herokuapp.com/api/gov/current`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${window.localStorage.token}`
+                },
+            }).then(res => {
+                r_role = res.data.user.role
+                updateRole(r_role)
+            }).catch((err) => {
+                console.log(err.response)
+            });
+        } else {
+            props.history.push('login')
+        }
     }
-    let w_curr, w_fut;
+
+    const classes = useGovenmentTalbeStyles();
+    const [open, setOpen] = React.useState(false);
     const [applications, setApplications] = useState([]);
     const [role, updateRole] = useState(r_role);
-    
+    const [w_curr, update_w_curr] = useInputState(0.3);
+    const [w_fut, update_w_fut] = useInputState(0.7);
+
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('overall');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    useEffect(() => {
+        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`)
+            .then((res) => {
+                setApplications(res.data.applications);
+                window.applications = res.data.applications
+            })
+
+    }, applications)
 
     const a = applications.map(application => {
+        const abo_status = application.abo_existing_data_status;
+        const disa_status = application.disability_data_status;
+        const ref_status = application.refugee_data_status;
+        const unemp_status = application.unemployed_data_status;
         const abo_future = (application.emp_abo.length > 0 && application.emp_abo[0].future_emp != null) ? Number(application.emp_abo[0].future_emp) : 0;
         const abo_current = (application.emp_abo.length > 0 && application.emp_abo[0].curr_emp != null) ? Number(application.emp_abo[0].curr_emp) : 0;
         const disa_future = (application.emp_disability.length > 0 && application.emp_disability[0].future_emp != null) ? Number(application.emp_disability[0].future_emp) : 0;
@@ -149,28 +180,17 @@ export default function GovernmentView(props) {
         const ref_current = (application.emp_refugee.length > 0 && application.emp_refugee[0].curr_emp != null) ? Number(application.emp_refugee[0].curr_emp) : 0;
         const unemp_future = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].future_emp != null) ? Number(application.emp_unemploy[0].future_emp) : 0;
         const unemp_current = (application.emp_unemploy.length > 0 && application.emp_unemploy[0].curr_emp != null) ? Number(application.emp_unemploy[0].curr_emp) : 0;
-        const overall = getOverall(abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
-        const created_date = application.created_date;
-        return { company_name: application.company_name,
-                 aboriginal: abo_current, disability: disa_current,
-                 refugee: ref_current, unemployed: unemp_current,
-                 overall: overall, created_date: created_date }
+        const overall = getOverall(w_curr, w_fut, abo_current, abo_future, disa_current, disa_future, ref_current, ref_future, unemp_current, unemp_future)
+        return {
+            abo_status: abo_status, disa_status: disa_status,
+            ref_status: ref_status, unemp_status: unemp_status,
+            abo_current: abo_current, disa_current: disa_current,
+            ref_current: ref_current, unemp_current: unemp_current,
+            overall: overall,
+            company_name: application.company_name,
+            created_date: application.created_date
+        }
     })
-
-
-    useEffect(() => {
-        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`)
-            .then((res) => {
-                setApplications(res.data.applications);
-                window.applications = res.data.applications
-            })
-        
-    }, applications)
-    const classes = useGovenmentTalbeStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('overall');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handleRequestSort = (event, property) => {
         const isDesc = orderBy === property && order === 'desc';
@@ -188,7 +208,7 @@ export default function GovernmentView(props) {
     };
 
     const handleFuture = () => {
-        const data = {role: role}
+        const data = { role: role }
         const path = {
             pathname: '/future_result',
             state: data,
@@ -199,17 +219,19 @@ export default function GovernmentView(props) {
     const showHistoryDetails = (evt) => {
         const filter_applications = window.applications.filter(application => application.company_name === evt.target.parentNode.getAttribute('value'))
         const chart_data = filter_applications.map(application => {
-            return ({"year": application.created_date.substring(0, 4),
-             "aboriginal":application.emp_abo[0] ? application.emp_abo[0].curr_emp : 0,
-             "aboriginalColor": "hsl(98, 70%, 50%)",
-             "disability":application.emp_disability[0] ? application.emp_disability[0].curr_emp : 0,
-             "disabilityColor": "hsl(111, 70%, 50%)",
-             "refugee":application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
-             "refugeeColor": "hsl(268, 70%, 50%)",
-             "unemployed":application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
-             "unemployedColor": "hsl(170, 70%, 50%)"
-            })})
-        const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value')}
+            return ({
+                "year": application.created_date.substring(0, 4),
+                "aboriginal": application.emp_abo[0] ? application.emp_abo[0].curr_emp : 0,
+                "aboriginalColor": "hsl(98, 70%, 50%)",
+                "disability": application.emp_disability[0] ? application.emp_disability[0].curr_emp : 0,
+                "disabilityColor": "hsl(111, 70%, 50%)",
+                "refugee": application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
+                "refugeeColor": "hsl(268, 70%, 50%)",
+                "unemployed": application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
+                "unemployedColor": "hsl(170, 70%, 50%)"
+            })
+        })
+        const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value') }
         const path = {
             pathname: '/history_detail',
             state: data,
@@ -217,34 +239,50 @@ export default function GovernmentView(props) {
         props.history.push(path)
     }
 
+    function showDialog() {
+        setOpen(true);
+    }
+
+    function closeDialog() {
+        setOpen(false);
+    }
+
+    function validateWeight() {
+        console.log("w_curr = " + w_curr + "   w_fut = " + w_fut);
+        if (w_curr + w_fut != 1) {
+            showDialog()
+        }
+    };
+
+
     var GovView;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, applications.length - page * rowsPerPage);
 
-    if(role === 'gov'){
-        GovView = 
+    if (role === 'gov') {
+        GovView =
 
             <div>
-            <NaviBar />
-            <Container component="main" maxWidth="lg">
-                <br />
-                <Grid container spacing={3}>
-                    <Grid item xs={8}>
-                        <Typography component="h2" variant="h5" align="left">
-                           Current Employment Results
+                <NaviBar />
+                <Container component="main" maxWidth="lg">
+                    <br />
+                    <Grid container spacing={3}>
+                        <Grid item xs={8}>
+                            <Typography component="h2" variant="h5" align="left">
+                                Current Employment Results
                         </Typography>
+                        </Grid>
+                        <Grid item xs={4} align="right">
+                            <Button onClick={handleFuture} color="primary"  >Future Employee</Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4} align="right">
-                    <Button onClick={handleFuture} color="primary"  >Future Employee</Button>
-                    </Grid>
-                </Grid>
-                <Grid
+                    <Grid
                         container
                         spacing={6}
                         direction="row"
                         alignItems="center"
                         justify="center">
-                        <Grid item xs={3}><h6>Weight For Current Recruitment</h6></Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={3}><h6>Weight For Current Recruitment</h6></Grid>
+                        <Grid item xs={1}>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -252,14 +290,14 @@ export default function GovernmentView(props) {
                                 type="number"
                                 min="0" max="1" step="0.05"
                                 id="w_curr"
-                                label="Weight For Current Employment"
+                                label="Weight For Current Employment"
                                 name="w_curr"
                                 value={w_curr}
-                            // onChange={updateEmail}
+                                onChange={e => update_w_curr(e.target.value)}
                             />
                         </Grid>
-                        <Grid item xs={3}><h6>Weight For Future Recruitment</h6></Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={3}><h6>Weight For Future Recruitment</h6></Grid>
+                        <Grid item xs={1}>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -267,79 +305,127 @@ export default function GovernmentView(props) {
                                 type="number"
                                 min="0" max="1" step="0.05"
                                 id="w_fut"
-                                label="Weight For Future Recruitment"
+                                label="Weight For Future Recruitment"
                                 name="w_fut"
                                 value={w_fut}
-                            // onChange={updateEmail}
+                                onChange={e => update_w_fut(e.target.value)}
                             />
                         </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                onClick={validateWeight}
+                            >Recalculate Overall</Button>
+                        </Grid>
                     </Grid>
-                <Paper className={classes.root}>
-                    <div className={classes.tableWrapper}>
-                        <Table
-                            className={classes.table}
-                            size='medium'
-                        >
-                            <EnhancedTableHead
-                                classes={classes}
-                                order={order}
-                                orderBy={orderBy}
-                                onRequestSort={handleRequestSort}
-                            />
-                            <TableBody onClick={showHistoryDetails}>
-                                {stableSort(a, getSorting(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((application, index) => {
+                    <Paper className={classes.root}>
+                        <div className={classes.tableWrapper}>
+                            <Table
+                                className={classes.table}
+                                size='medium'
+                            >
+                                <EnhancedTableHead
+                                    classes={classes}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onRequestSort={handleRequestSort}
+                                />
+                                <TableBody onClick={showHistoryDetails}>
+                                    {stableSort(a, getSorting(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((application, index) => {
 
-                                        return (
-                                            <TableRow
-                                                hover
-                                                tabIndex={-1}
-                                                key={index}
-                                                value={application.company_name}
-                                            >
-                                                <TableCell component="th" id={index} scope="application" padding="default">
-                                                    {application.company_name}
-                                                </TableCell>
-                                                <TableCell align="center">{application.aboriginal}</TableCell>
-                                                <TableCell align="center">{application.disability}</TableCell>
-                                                <TableCell align="center">{application.refugee}</TableCell>
-                                                <TableCell align="center">{application.unemployed}</TableCell>
-                                                <TableCell align="center">{application.overall} </TableCell>
-                                                <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 20]}
-                        component="div"
-                        count={applications.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
-                </Paper>
-            </Container>
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    tabIndex={-1}
+                                                    key={index}
+                                                    value={application.company_name}
+                                                >
+                                                    <TableCell component="th" id={index} scope="application" padding="default">
+                                                        {application.company_name}
+                                                    </TableCell>
+                                                    <TableCell align="center" style={(() => {
+                                                        switch (application.abo_status) {
+                                                            case "confirm": return { color: "#32CD32", };
+                                                            case "refute": return { color: "#FF0000", };
+                                                            default: return { color: "#000000", };
+                                                        }
+                                                    })()}>{application.abo_current}</TableCell>
+
+                                                    <TableCell align="center" style={(() => {
+                                                        switch (application.disa_status) {
+                                                            case "confirm": return { color: "#32CD32", };
+                                                            case "refute": return { color: "#FF0000", };
+                                                            default: return { color: "#000000", };
+                                                        }
+                                                    })()}>{application.disa_current}</TableCell>
+
+                                                    <TableCell align="center" style={(() => {
+                                                        switch (application.refugee_status) {
+                                                            case "confirm": return { color: "#32CD32", };
+                                                            case "refute": return { color: "#FF0000", };
+                                                            default: return { color: "#000000", };
+                                                        }
+                                                    })()}>{application.ref_current}</TableCell>
+
+                                                    <TableCell align="center" style={(() => {
+                                                        switch (application.unemp_status) {
+                                                            case "confirm": return { color: "#32CD32", };
+                                                            case "refute": return { color: "#FF0000", };
+                                                            default: return { color: "#000000", };
+                                                        }
+                                                    })()}>{application.unemp_current}</TableCell>
+
+                                                    <TableCell align="center">{application.overall} </TableCell>
+                                                    <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20]}
+                            component="div"
+                            count={applications.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+
+                    <Dialog open={open} onClose={closeDialog}>
+                        <DialogTitle id="alert-dialog-title">{"Incorrect Weight Sum"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">The two weights must sum to 1.</DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={closeDialog} color="primary" autoFocus>OK</Button>
+                        </DialogActions>
+                    </Dialog>
+
+                </Container>
             </div>
-    }else{
+    } else {
         GovView = <Redirect to="/notFound" />
     }
-    
+
 
     return (
         <div>
             {GovView}
         </div>
-        
-        
+
+
     );
 }
