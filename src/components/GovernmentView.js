@@ -152,15 +152,36 @@ export default function GovernmentView(props) {
     const [orderBy, setOrderBy] = React.useState('overall');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [year, setYear] = React.useState(2019);
 
     useEffect(() => {
-        axios.get(`https://shielded-fjord-25564.herokuapp.com/api/verifier/applications`)
+        axios.get(`http://localhost:8001/api/verifier/applications/`)
             .then((res) => {
-                setApplications(res.data.applications);
                 window.applications = res.data.applications
+                const now_applications = res.data.applications.filter(application => application.created_date.substring(0, 4) === year.toString())
+                setApplications(now_applications);
             })
 
     }, applications)
+
+    const handlePreviousYear = () =>{
+        console.log(year)
+        axios.get(`http://localhost:8001/api/verifier/applications/${year-1}`)
+        .then((res) => {
+            setApplications(res.data.applications);
+            setYear(year-1);
+        })
+        
+    }
+
+    const handleNextYear = () =>{
+        axios.get(`http://localhost:8001/api/verifier/applications/${year+1}`)
+        .then((res) => {
+            setApplications(res.data.applications);
+            setYear(year+1);
+        })
+        
+    }
 
     const a = applications.map(application => {
         const abo_status = application.abo_existing_data_status;
@@ -212,26 +233,29 @@ export default function GovernmentView(props) {
     }
 
     const showHistoryDetails = (evt) => {
-        const filter_applications = window.applications.filter(application => application.company_name === evt.target.parentNode.getAttribute('value'))
-        const chart_data = filter_applications.map(application => {
-            return ({
-                "year": application.created_date.substring(0, 4),
-                "aboriginal": application.emp_abo[0] ? application.emp_abo[0].curr_emp : 0,
-                "aboriginalColor": "hsl(98, 70%, 50%)",
-                "disability": application.emp_disability[0] ? application.emp_disability[0].curr_emp : 0,
-                "disabilityColor": "hsl(111, 70%, 50%)",
-                "refugee": application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
-                "refugeeColor": "hsl(268, 70%, 50%)",
-                "unemployed": application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
-                "unemployedColor": "hsl(170, 70%, 50%)"
+        if(evt.target.parentNode.getAttribute('value')){
+            const filter_applications = window.applications.filter(application => application.company_name === evt.target.parentNode.getAttribute('value'))
+            const chart_data = filter_applications.map(application => {
+                return ({
+                    "year": application.created_date.substring(0, 4),
+                    "aboriginal": application.emp_abo[0] ? application.emp_abo[0].curr_emp : 0,
+                    "aboriginalColor": "hsl(98, 70%, 50%)",
+                    "disability": application.emp_disability[0] ? application.emp_disability[0].curr_emp : 0,
+                    "disabilityColor": "hsl(111, 70%, 50%)",
+                    "refugee": application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
+                    "refugeeColor": "hsl(268, 70%, 50%)",
+                    "unemployed": application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
+                    "unemployedColor": "hsl(170, 70%, 50%)"
+                })
             })
-        })
-        const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value') }
-        const path = {
-            pathname: '/history_detail',
-            state: data,
+            const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value') }
+            const path = {
+                pathname: '/history_detail',
+                state: data,
+            }
+            props.history.push(path)
         }
-        props.history.push(path)
+        
     }
 
     var GovView;
@@ -291,8 +315,15 @@ export default function GovernmentView(props) {
                                 onChange={e => update_w_fut(e.target.value)}
                             />
                         </Grid>
+                        <Grid item xs={2}>
+                            <Button onClick={handlePreviousYear} color="primary" align="right" >Previous Year</Button>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button onClick={handleNextYear} color="primary" align="right">Next Year</Button>
+                        </Grid>
                         
                     </Grid>
+
                     <Paper className={classes.root}>
                         <div className={classes.tableWrapper}>
                             <Table
