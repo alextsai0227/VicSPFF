@@ -1,6 +1,6 @@
 // Material UI
 import MaterialTable from 'material-table';
-import Paper from '@material-ui/core/Paper';
+import {Paper} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 
 // React related package

@@ -1,7 +1,7 @@
 // Material UI
 import TextField from 'material-ui/TextField';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/paper';
+import {Paper} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 
