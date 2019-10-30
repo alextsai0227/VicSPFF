@@ -200,8 +200,8 @@ export default function GovernmentView(props) {
         return {
             abo_status: abo_status, disa_status: disa_status,
             ref_status: ref_status, unemp_status: unemp_status,
-            abo_current: abo_current, disa_current: disa_current,
-            ref_current: ref_current, unemp_current: unemp_current,
+            aboriginal: abo_current, disability: disa_current,
+            refugee: ref_current, unemployed: unemp_current,
             overall: overall,
             company_name: application.company_name,
             created_date: application.created_date
@@ -359,7 +359,7 @@ export default function GovernmentView(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.abo_current}</TableCell>
+                                                    })()}>{application.aboriginal}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.disa_status) {
@@ -367,7 +367,7 @@ export default function GovernmentView(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.disa_current}</TableCell>
+                                                    })()}>{application.disability}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.refugee_status) {
@@ -375,7 +375,7 @@ export default function GovernmentView(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.ref_current}</TableCell>
+                                                    })()}>{application.refugee}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.unemp_status) {
@@ -383,7 +383,7 @@ export default function GovernmentView(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.unemp_current}</TableCell>
+                                                    })()}>{application.unemployed}</TableCell>
 
                                                     <TableCell align="center">{application.overall} </TableCell>
                                                     <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
