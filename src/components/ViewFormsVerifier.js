@@ -95,7 +95,7 @@ export default function ViewFormsVerifier(props) {
     // ************** For Sorting & Pagination ***************
 
     const a = filter_application.map(application => {
-        return {_id:application._id, company_name: application.company_name, created_date: application.created_date, status: application[status]}
+        return {_id:application._id, company_name: application.company_name, created_date: application.created_date, status: application[status] || 'Unverified'}
     })
     
     function desc(a, b, orderBy) {
