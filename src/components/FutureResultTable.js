@@ -197,8 +197,8 @@ export default function FutureResultTable(props) {
         return {
             abo_status: abo_status, disa_status: disa_status,
             ref_status: ref_status, unemp_status: unemp_status,
-            abo_future: abo_future, disa_future: disa_future,
-            ref_future: ref_future, unemp_future: unemp_future,
+            aboriginal: abo_future, disability: disa_future,
+            refugee: ref_future, unemployed: unemp_future,
             overall: overall,
             company_name: application.company_name,
             created_date: application.created_date
@@ -354,7 +354,7 @@ export default function FutureResultTable(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.abo_future}</TableCell>
+                                                    })()}>{application.aboriginal}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.disa_status) {
@@ -362,7 +362,7 @@ export default function FutureResultTable(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.disa_future}</TableCell>
+                                                    })()}>{application.disability}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.refugee_status) {
@@ -370,7 +370,7 @@ export default function FutureResultTable(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.ref_future}</TableCell>
+                                                    })()}>{application.refugee}</TableCell>
 
                                                     <TableCell align="center" style={(() => {
                                                         switch (application.unemp_status) {
@@ -378,7 +378,7 @@ export default function FutureResultTable(props) {
                                                             case "refute": return { color: "#FF0000", };
                                                             default: return { color: "#000000", };
                                                         }
-                                                    })()}>{application.unemp_future}</TableCell>
+                                                    })()}>{application.unemployed}</TableCell>
 
                                                     <TableCell align="center">{application.overall} </TableCell>
                                                     <TableCell align="center">{application.created_date.slice(0, 10)} </TableCell>
