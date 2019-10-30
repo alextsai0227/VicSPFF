@@ -245,10 +245,16 @@ export default function GovernmentView(props) {
                     "refugee": application.emp_refugee[0] ? application.emp_refugee[0].curr_emp : 0,
                     "refugeeColor": "hsl(268, 70%, 50%)",
                     "unemployed": application.emp_unemploy[0] ? application.emp_unemploy[0].curr_emp : 0,
-                    "unemployedColor": "hsl(170, 70%, 50%)"
+                    "unemployedColor": "hsl(170, 70%, 50%)",
+                    "name": "Current employment"
                 })
             })
-            const data = { data: chart_data, company_name: evt.target.parentNode.getAttribute('value') }
+            
+            const data = { data: chart_data.sort(function(a, b){
+                if(a.year < b.year) { return -1; }
+                if(a.year > b.year) { return 1; }
+                return 0;
+            }), company_name: evt.target.parentNode.getAttribute('value') }
             const path = {
                 pathname: '/history_detail',
                 state: data,
