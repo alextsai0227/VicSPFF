@@ -27,7 +27,7 @@ export default function HistoryDetail(props) {
 
 
     const company_name = props.location.state.company_name
-    console.log()
+    const title = props.location.state.data[0].name
     const data = props.location.state.data
 
     // const user = props.location.state.user
@@ -60,7 +60,7 @@ export default function HistoryDetail(props) {
             <NaviBar />
             <Container component="main" maxWidth="md">
                 <br />
-                <h1> Application History : {company_name}</h1>
+                <h1> {company_name}: {title}</h1>
                 <br />
                 {/*<div>
                     <Grid container spacing={3}>
